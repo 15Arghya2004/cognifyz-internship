@@ -52,7 +52,8 @@ def play():
             break
 
 
-play()
+if __name__ == "__main__":
+    play()
 
 # ============================================
 # TESTING - ye inputs try kar:
