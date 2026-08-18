@@ -67,7 +67,67 @@ Those are the harder ones to notice.
 
 ## Game 2 — Quiz Game
 
-Not implemented yet.
+### Rules
+
+1. The quiz has a fixed set of 5 multiple-choice questions.
+2. Each question offers four options, labelled A, B, C and D.
+3. A correct answer adds one point; a wrong answer reveals the correct option.
+4. After the last question the program reports the score and the percentage.
+5. Invalid input does not crash the game and does not skip the question.
+
+### Run
+
+```bash
+python quiz_game.py
+```
+
+### Test cases
+
+| Input | Expected behaviour | Reason |
+|-------|--------------------|--------|
+| `B` | Accepted, scored | Normal path |
+| `b` | Accepted, scored | `.upper()` normalises the case |
+| `  b  ` | Accepted, scored | `.strip()` removes surrounding spaces |
+| `Z` | Error message, asks again | Not in `("A", "B", "C", "D")` |
+| `hello` | Error message, asks again | Same range check |
+| *(empty Enter)* | Error message, asks again | Empty string is not a valid choice |
+
+Verified: a run answering `Z`, `hello`, *(empty)* and then `  b  ` on question 1
+still scored that question once and did not skip it.
+
+### Why a `for` loop here and a `while` loop in the guessing game
+
+This is the main reason both games exist in this task.
+
+| | `guessing_game.py` | `quiz_game.py` |
+|---|---|---|
+| Loop | `while True` | `for item in QUESTIONS` |
+| Reason | The number of rounds is unknown until the player wins | The number of questions is fixed at 5 |
+
+Rule of thumb: when the number of repetitions is known in advance, use `for`;
+when it depends on a condition, use `while`.
+
+### Design note — questions are data, not code
+
+The questions live in a `QUESTIONS` list of dictionaries at the top of the file,
+separate from the game logic. Adding or removing a question means editing that
+list only — `total = len(QUESTIONS)` adjusts automatically and no other line
+changes. Hard-coding each question inside the loop would have required copying
+the same block of code for every new question.
+
+### Input validation — different from the guessing game
+
+The guessing game needs `try/except ValueError` because it converts the input
+to an integer with `int()`, which can fail. The quiz game never converts
+anything, so a membership test is enough:
+
+```python
+choice = raw.strip().upper()
+if choice in VALID_CHOICES:
+    return choice
+```
+
+Catching an exception where a simple check suffices would be the wrong tool.
 
 ## practice/
 
