@@ -43,8 +43,9 @@ cognifyz-internship/
 ├── task1_text_based_game/
 │   ├── README.md
 │   ├── guessing_game.py
-│   ├── quiz_game.py
 │   └── practice/                   <- small experiments, not submission code
+│       ├── demo1_def_vs_call.py
+│       └── demo2_secret_dikhao.py
 ├── task2_number_pattern/
 ├── task3_task_manager_crud/
 └── task5_task_manager_persistent/
