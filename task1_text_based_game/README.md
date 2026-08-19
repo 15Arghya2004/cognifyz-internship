@@ -13,7 +13,11 @@ Two separate games, both satisfying the requirement:
 | File | Game | Main concept |
 |------|------|--------------|
 | `guessing_game.py` | Number guessing (1–100) | `while` loop — unknown number of rounds |
-| `quiz_game.py` | Multiple-choice quiz | `for` loop — fixed number of questions |
+| `quiz_game.py` | Multiple-choice quiz, data-driven | `for` loop — fixed number of questions |
+
+`quiz_game.py` reads its questions from `questions.json`. The questions are
+data, not code — a different question set can be dropped in without editing
+the program.
 
 ## Game 1 — Number Guessing Game
 
@@ -69,11 +73,14 @@ Those are the harder ones to notice.
 
 ### Rules
 
-1. The quiz has a fixed set of 5 multiple-choice questions.
-2. Each question offers four options, labelled A, B, C and D.
-3. A correct answer adds one point; a wrong answer reveals the correct option.
-4. After the last question the program reports the score and the percentage.
-5. Invalid input does not crash the game and does not skip the question.
+1. Questions live in `questions.json`, not inside the program.
+2. The player selects a topic and a difficulty (or `All` for either).
+3. Each game draws **5 random questions** from the filtered pool, with no
+   repeats inside a single game.
+4. A correct answer adds one point; a wrong answer reveals the correct option.
+5. Invalid input never crashes the game and never skips a question.
+6. The best score for each topic + difficulty combination is stored in
+   `highscores.json`.
 
 ### Run
 
@@ -81,19 +88,53 @@ Those are the harder ones to notice.
 python quiz_game.py
 ```
 
+`questions.json` must sit next to `quiz_game.py`. The program resolves both
+data files relative to its own location, so it can be run from any directory.
+
+### Question bank format
+
+```json
+{
+  "name": "Default bank — Python basics & general knowledge",
+  "version": 1,
+  "questions": [
+    {
+      "id": "py-e-01",
+      "topic": "Python",
+      "difficulty": "easy",
+      "question": "Python mein input() function kya return karta hai?",
+      "options": { "A": "Integer", "B": "String", "C": "Float", "D": "Boolean" },
+      "answer": "B"
+    }
+  ]
+}
+```
+
+To use a different question set, replace `questions.json` with another file
+in this shape. No code changes are required. The topic and difficulty menus
+are built from whatever values appear in the file, so a bank containing a new
+topic will show that topic in the menu automatically.
+
+The bundled bank holds 30 questions — 5 for each combination of two topics
+(Python, General Knowledge) and three difficulties (easy, medium, hard).
+
 ### Test cases
 
-| Input | Expected behaviour | Reason |
-|-------|--------------------|--------|
+| Input / condition | Expected behaviour | Reason |
+|-------------------|--------------------|--------|
 | `B` | Accepted, scored | Normal path |
-| `b` | Accepted, scored | `.upper()` normalises the case |
-| `  b  ` | Accepted, scored | `.strip()` removes surrounding spaces |
-| `Z` | Error message, asks again | Not in `("A", "B", "C", "D")` |
-| `hello` | Error message, asks again | Same range check |
-| *(empty Enter)* | Error message, asks again | Empty string is not a valid choice |
+| `b` / `  b  ` | Accepted, scored | `.upper()` and `.strip()` normalise the input |
+| `Z`, `hello`, *(empty)* | Error message, asks again | Not in `("A","B","C","D")` |
+| Menu input `0`, `99`, `abc` | Error message, asks again | Range check plus `int()` conversion |
+| Two runs, same filter | Different question order/set | `random.sample()` per game |
+| `questions.json` missing | Clear message, no traceback | `FileNotFoundError` handled |
+| `questions.json` malformed | Message with the parse error | `json.JSONDecodeError` handled |
+| A question missing `answer` | That question skipped, game continues | Validated on load |
+| Filter matches fewer than 5 | Plays with what exists, states the count | Guard before `random.sample()` |
 
-Verified: a run answering `Z`, `hello`, *(empty)* and then `  b  ` on question 1
-still scored that question once and did not skip it.
+Verified: across 200 simulated selections no game contained a duplicate
+question. All 14 Python questions in the bank were checked by executing the
+expressions they ask about.
 
 ### Why a `for` loop here and a `while` loop in the guessing game
 
@@ -101,7 +142,7 @@ This is the main reason both games exist in this task.
 
 | | `guessing_game.py` | `quiz_game.py` |
 |---|---|---|
-| Loop | `while True` | `for item in QUESTIONS` |
+| Loop | `while True` | `for item in selected` |
 | Reason | The number of rounds is unknown until the player wins | The number of questions is fixed at 5 |
 
 Rule of thumb: when the number of repetitions is known in advance, use `for`;
@@ -109,17 +150,24 @@ when it depends on a condition, use `while`.
 
 ### Design note — questions are data, not code
 
-The questions live in a `QUESTIONS` list of dictionaries at the top of the file,
-separate from the game logic. Adding or removing a question means editing that
-list only — `total = len(QUESTIONS)` adjusts automatically and no other line
-changes. Hard-coding each question inside the loop would have required copying
-the same block of code for every new question.
+Keeping the questions in a JSON file rather than a Python list means the
+program never has to change when the content changes. `total = len(selected)`
+adjusts automatically, and the menus are derived from the file rather than
+hard-coded, so the data file remains the single source of truth.
 
-### Input validation — different from the guessing game
+### Design note — `random.sample()` rather than `random.choice()`
 
-The guessing game needs `try/except ValueError` because it converts the input
-to an integer with `int()`, which can fail. The quiz game never converts
-anything, so a membership test is enough:
+`random.choice()` picks from the whole pool every time, so calling it five
+times can return the same question twice. `random.sample()` draws without
+replacement, which is what a quiz needs. Because `random.sample()` raises
+`ValueError` when asked for more items than the pool holds, the pool size is
+checked first and a shuffled copy is used when the filter matches fewer than
+five questions.
+
+### Input validation — two different tools, on purpose
+
+The answer prompt only needs a membership test, because the set of valid
+answers is known up front:
 
 ```python
 choice = raw.strip().upper()
@@ -127,7 +175,20 @@ if choice in VALID_CHOICES:
     return choice
 ```
 
-Catching an exception where a simple check suffices would be the wrong tool.
+The menu prompt also has to convert text to a number, and that conversion can
+fail, so it needs both:
+
+```python
+try:
+    picked = int(raw)          # Python's rule: can this text become a number?
+except ValueError:
+    ...
+if 1 <= picked <= len(choices):   # our rule: is it a valid menu position?
+    ...
+```
+
+Use `if` when the rule can be checked in advance; use `try/except` when the
+only way to know is to attempt the operation.
 
 ## practice/
 

@@ -16,3 +16,6 @@ env/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Game data (generated at runtime, not source)
+highscores.json

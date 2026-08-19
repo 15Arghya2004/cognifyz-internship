@@ -45,6 +45,7 @@ cognifyz-internship/
 │   ├── README.md
 │   ├── guessing_game.py
 │   ├── quiz_game.py
+│   ├── questions.json              <- quiz question bank (data, not code)
 │   └── practice/                   <- small experiments, not submission code
 │       ├── demo1_def_vs_call.py
 │       └── demo2_secret_dikhao.py
