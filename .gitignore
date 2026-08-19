@@ -23,3 +23,10 @@ highscores.json
 # Scraper output (generated at runtime, not source)
 books.csv
 task6_web_scraper/*.csv
+
+# Task 5 runtime data (generated, not source)
+task5_task_manager_persistent/tasks.txt
+task5_task_manager_persistent/tasks.json
+*.bak
+*.bak.[0-9]*
+*.tmp

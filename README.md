@@ -18,11 +18,8 @@ attempted, one level at a time.
 | 2 | Beginner | Number Pattern Generator | `task2_number_pattern/` | Complete |
 | 3 | Intermediate | Console Task Manager (CRUD) | `task3_task_manager_crud/` | Complete |
 | 4 | Intermediate | Health Temperature Toolkit | `task4_temperature_converter/` | Complete |
-| 5 | Advanced | Persistent Task Manager (File I/O) | `task5_task_manager_persistent/` | Not started |
+| 5 | Advanced | Persistent Task Manager (File I/O) | `task5_task_manager_persistent/` | Complete |
 | 6 | Advanced | Interactive Web Scraper | `task6_web_scraper/` | Draft — needs live run |
-
-Folders for tasks that have not been started yet do not exist in the
-repository. They are listed above only to show the full plan.
 
 ## How to run
 
@@ -34,6 +31,7 @@ python task1_text_based_game/quiz_game.py
 python task2_number_pattern/pattern_generator.py
 python task3_task_manager_crud/task_manager.py
 python task4_temperature_converter/temperature_converter.py
+python task5_task_manager_persistent/task_manager.py
 ```
 
 Task 6 needs two libraries first:
@@ -77,7 +75,10 @@ cognifyz-internship/
 │   ├── README.md
 │   ├── temperature_converter.py    <- C/F convert + fever, heat index, wind chill
 │   └── assets/
-├── task5_task_manager_persistent/  <- placeholder, not started
+├── task5_task_manager_persistent/
+│   ├── README.md
+│   ├── task_manager.py             <- same CRUD, now saved to tasks.txt
+│   └── assets/
 └── task6_web_scraper/
     ├── README.md
     ├── requirements.txt
