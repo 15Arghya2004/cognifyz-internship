@@ -17,7 +17,7 @@ attempted, one level at a time.
 | 1 | Beginner | Basic Text-Based Game | `task1_text_based_game/` | Complete |
 | 2 | Beginner | Number Pattern Generator | `task2_number_pattern/` | Complete |
 | 3 | Intermediate | Console Task Manager (CRUD) | `task3_task_manager_crud/` | Complete |
-| 4 | Intermediate | Temperature Converter | `task4_temperature_converter/` | Complete |
+| 4 | Intermediate | Health Temperature Toolkit | `task4_temperature_converter/` | Complete |
 | 5 | Advanced | Persistent Task Manager (File I/O) | `task5_task_manager_persistent/` | Not started |
 | 6 | Advanced | Interactive Web Scraper | `task6_web_scraper/` | Draft — needs live run |
 
@@ -71,10 +71,12 @@ cognifyz-internship/
 │   └── assets/
 ├── task3_task_manager_crud/
 │   ├── README.md
-│   └── task_manager.py             <- Task class + CRUD, in-memory list
+│   ├── task_manager.py             <- Task class + CRUD, in-memory list
+│   └── assets/
 ├── task4_temperature_converter/
 │   ├── README.md
-│   └── temperature_converter.py
+│   ├── temperature_converter.py    <- C/F convert + fever, heat index, wind chill
+│   └── assets/
 ├── task5_task_manager_persistent/  <- placeholder, not started
 └── task6_web_scraper/
     ├── README.md
