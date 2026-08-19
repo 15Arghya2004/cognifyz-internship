@@ -15,7 +15,7 @@ contains the 4 tasks listed below.
 | Task | Title | Folder | Status |
 |------|-------|--------|--------|
 | 1 | Basic Text-Based Game | `task1_text_based_game/` | Complete |
-| 2 | Number Pattern Generator | `task2_number_pattern/` | Not Started |
+| 2 | Number Pattern Generator | `task2_number_pattern/` | Complete |
 | 3 | Console Task Manager (CRUD) | `task3_task_manager_crud/` | Not Started |
 | 5 | Persistent Task Manager (File I/O) | `task5_task_manager_persistent/` | Not Started |
 
@@ -26,6 +26,7 @@ Every program is a standalone script. Nothing to install.
 ```bash
 python task1_text_based_game/guessing_game.py
 python task1_text_based_game/quiz_game.py
+python task2_number_pattern/pattern_generator.py
 ```
 
 Requires Python 3.6 or above. Check with:
@@ -46,10 +47,14 @@ cognifyz-internship/
 │   ├── guessing_game.py
 │   ├── quiz_game.py
 │   ├── questions.json              <- quiz question bank (data, not code)
+│   ├── assets/                     <- demo recordings for the README
 │   └── practice/                   <- small experiments, not submission code
 │       ├── demo1_def_vs_call.py
 │       └── demo2_secret_dikhao.py
 ├── task2_number_pattern/
+│   ├── README.md
+│   ├── pattern_generator.py
+│   └── assets/
 ├── task3_task_manager_crud/
 └── task5_task_manager_persistent/
 ```
