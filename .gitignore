@@ -30,3 +30,5 @@ task5_task_manager_persistent/tasks.json
 *.bak
 *.bak.[0-9]*
 *.tmp
+task5_task_manager_persistent/tasks.txt.migrated
+*.migrated

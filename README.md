@@ -18,7 +18,7 @@ attempted, one level at a time.
 | 2 | Beginner | Number Pattern Generator | `task2_number_pattern/` | Complete |
 | 3 | Intermediate | Console Task Manager (CRUD) | `task3_task_manager_crud/` | Complete |
 | 4 | Intermediate | Health Temperature Toolkit | `task4_temperature_converter/` | Complete |
-| 5 | Advanced | Persistent Task Manager (File I/O) | `task5_task_manager_persistent/` | Complete |
+| 5 | Advanced | Persistent Task Manager + Reminders | `task5_task_manager_persistent/` | Complete |
 | 6 | Advanced | Interactive Web Scraper | `task6_web_scraper/` | Draft — needs live run |
 
 ## How to run
@@ -32,6 +32,13 @@ python task2_number_pattern/pattern_generator.py
 python task3_task_manager_crud/task_manager.py
 python task4_temperature_converter/temperature_converter.py
 python task5_task_manager_persistent/task_manager.py
+```
+
+Task 5 can also print just the reminder briefing and exit, which makes it
+usable from Windows Task Scheduler:
+
+```bash
+python task5_task_manager_persistent/task_manager.py --check
 ```
 
 Task 6 needs two libraries first:
@@ -77,7 +84,7 @@ cognifyz-internship/
 │   └── assets/
 ├── task5_task_manager_persistent/
 │   ├── README.md
-│   ├── task_manager.py             <- same CRUD, now saved to tasks.txt
+│   ├── task_manager.py             <- CRUD + tasks.json store + deadline reminders
 │   └── assets/
 └── task6_web_scraper/
     ├── README.md

@@ -1,18 +1,21 @@
 <div align="center">
 
-# 💾 Task 5 — Persistent Task Manager
+# 🔔 Task 5 — Persistent Task Manager + Reminders
 
 **Cognifyz Technologies · Software Development Internship · Level 3**
 
 ![Python](https://img.shields.io/badge/Python-3.6%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Install](https://img.shields.io/badge/Install-Kuch%20nahi-success?style=for-the-badge)
-![Checks](https://img.shields.io/badge/Checks-89%2F89%20pass-brightgreen?style=for-the-badge)
-![Storage](https://img.shields.io/badge/Storage-Text%20file-orange?style=for-the-badge)
+![Checks](https://img.shields.io/badge/Checks-110%2F110%20pass-brightgreen?style=for-the-badge)
+![Storage](https://img.shields.io/badge/Store-tasks.json-orange?style=for-the-badge)
 
-Task 3 wala task manager — **ab data file mein save hota hai.**
-Program band karo, dobara kholo, tasks wapas mil jaate hain.
+Ek constant JSON file mein tasks jama hote rehte hain.
+Har baar program khulte hi batata hai: **kya overdue hai, kya aaj due hai,
+kya aane wala hai, aur pichhli baar ke baad kya badla.**
 
 </div>
+
+> Ye khud jaakar koi kaam nahi karta. Ye **yaad dilata hai** — kya karna hai, kab tak karna hai, aur kaunsi deadline nikal chuki hai.
 
 ---
 
@@ -22,197 +25,216 @@ Program band karo, dobara kholo, tasks wapas mil jaate hain.
 python task5_task_manager_persistent/task_manager.py
 ```
 
-Bas. Na install, na setup. File apne aap ban jaati hai.
+Sirf briefing chahiye, app nahi:
+
+```bash
+python task5_task_manager_persistent/task_manager.py --check
+```
 
 ---
 
-## 🎬 Data restart ke baad bhi zinda rehta hai
+## 🎬 Briefing + automation
 
 <div align="center">
 
-![Persistence demo](assets/persistence_demo.gif)
+![Briefing demo](assets/briefing_demo.gif)
 
-*Do task banaye → program band → **dobara chalaya** → dono wapas mil gaye → ek done kiya → JSON export*
+*App khulte hi briefing → ek task done → phir `--check` mode, jise Task Scheduler roz chalata hai*
 
 </div>
 
-> Ye GIF **do alag runs** ko jodkar banaya gaya hai. Beech wali `$ python task_manager.py` line wahin hai jahan program dobara chala.
+Briefing kuch aisi dikhti hai:
+
+```
+==============================================================
+  AAJ KA BRIEFING  -  Wednesday, 19 August 2026
+==============================================================
+
+  Pichhli baar: 2 din pehle   (kul 6 baar khola)
+
+  !! OVERDUE (2)
+     #1   Resume update karo         High      4 din se overdue
+     #2   Assignment submit karo     High      1 din se overdue
+
+  >> AAJ DUE (1)
+     #3   Task 5 ka README likho     High      aaj due
+
+  .. AGLE 3 DIN (1)
+     #4   Gym membership renew       Medium    2 din baad
+
+  Pichhli visit ke baad: 1 overdue ho gaye, 1 complete hue, 1 naye bane.
+
+  Kul 8 task | 7 pending | 1 done | 1 bina deadline
+==============================================================
+```
+
+**"Pichhli visit ke baad" wali line hi is task ka dil hai.** Wo kisi alag log file se nahi aati — program `meta.last_opened`, har task ka `created_at`, aur `completed_at` compare karke khud nikaal leta hai.
 
 ---
 
-## 🆕 Task 3 se kya alag hai
+## ⏰ Roz apne aap chalane ke liye (Windows Task Scheduler)
 
-| | Task 3 | Task 5 |
-|---|---|---|
-| Data kahan rehta hai | sirf memory mein | `tasks.txt` file mein |
-| Program band karne par | sab gayab | sab bacha rehta hai |
-| Save kab hota hai | — | har badlaav ke turant baad, apne aap |
-| Extra options | — | JSON export, file ki jaankari |
+Python script **khud se nahi jaag sakta** — wo tabhi chalta hai jab koi use chalaye. Asli automation ke liye Windows ko bolna padta hai:
 
-**`Task` class bilkul nahi badli.** Task 3 mein maine `to_dict()` aur `from_dict()` pehle hi bana diye the — Task 5 mein sirf save/load ka layer upar se juda hai. Jo README mein likha tha, wahi hua.
+1. Start menu mein **Task Scheduler** kholo
+2. **Create Basic Task** → naam do, jaise `Task reminders`
+3. Trigger: **When I log on** (ya **Daily**, apna time chuno)
+4. Action: **Start a program**
+   - Program: `python`
+   - Arguments: `"C:\Users\...\task5_task_manager_persistent\task_manager.py" --check`
+5. Finish
 
----
+Ab har login par briefing khud dikh jayegi.
 
-## 📄 File kaisi dikhti hai
+> Exact command program ke andar bhi mil jaayega — **option 9 (File ki jaankari)** chalao, wo tumhare computer ka poora path likhkar de dega.
 
-`tasks.txt` ek saada text file hai — notepad mein khol ke padh sakte ho:
+### `--check` mode ke do design decisions
 
-```
-# Cognifyz Internship - Task 5 data file
-# version 1
-# id|title|description|priority|due_date|status|created_at
-# '#' se shuru hone wali lines comment hain.
-1|Task 5 ka README likho|GIF bhi banana hai \| phir push|High|2026-08-24|pending|2026-08-19 22:00:04
-2|Gym jao||Low||pending|2026-08-19 22:00:04
-```
+**1. Wo `last_opened` ko haath nahi lagata.**
+Agar lagata, to Task Scheduler roz chal-chalkar "pichhli visit ke baad kya badla" khud hi kha jaata — aur tum jab app kholte, tumhe kabhi kuch naya dikhta hi nahi. Isliye visit sirf tab record hoti hai jab **tum** app kholte ho.
 
-Ek line = ek task. Fields `|` se alag.
+**2. Wo exit code deta hai.**
 
-Dhyaan se dekho pehli line mein: **`\|`** — wahi is task ka sabse important hissa hai.
+| Code | Matlab |
+|:---:|---|
+| `0` | kuch urgent nahi |
+| `1` | kuch overdue hai ya aaj due hai |
+| `2` | file hi nahi khul paayi |
 
----
-
-## ⚠️ Sabse bada bug jo hone se roka gaya
-
-Sochne mein file likhna aasaan lagta hai:
-
-```python
-line = "|".join([str(task.id), task.title, task.description, ...])
-```
-
-Aur padhna bhi:
-
-```python
-fields = line.split("|")
-```
-
-**Ye galat hai.** Agar user ne title hi aisa likh diya:
-
-```
-GIF bhi banana hai | phir push
-```
-
-To file mein ek extra `|` chala jayega. Load karte waqt `split("|")` 7 ki jagah **8 fields** dega, saara data ek khaana khisak jayega, aur `description` mein title ka aadha hissa aa jayega. Program crash bhi nahi karega — bas **chupchaap galat data** dikhata rahega. Yahi sabse khatarnaak kism ka bug hai.
-
-### Solution: escaping
-
-Likhte waqt khatarnaak characters badal do, padhte waqt wapas asli bana do:
-
-| Asli | File mein |
-|:---:|:---:|
-| `\` | `\\` |
-| `|` | `\|` |
-| newline | `\n` |
-| carriage return | `\r` |
-
-```python
-def escape(text):
-    text = text.replace("\\", "\\\\")     # sabse pehle backslash
-    text = text.replace("|", "\\|")
-    text = text.replace("\n", "\\n")
-    text = text.replace("\r", "\\r")
-    return text
-```
-
-> **Backslash sabse pehle kyun?** Agar `|` pehle badalte to wo `\|` ban jaata, aur uske baad backslash wala step usi naye backslash ko dobara badal deta — `\\|`. Padhte waqt sab bigad jaata. **Escape character ko hamesha sabse pehle escape karo.**
-
-Aur padhte waqt `split("|")` kaafi nahi — usse `\|` bhi separator lagta hai. Isliye ek chhota splitter likha jo **sirf un `|` par todta hai jo escape nahi hue**:
-
-```python
-if char == "\\" and index + 1 < len(line):
-    current.append(char)
-    current.append(line[index + 1])    # escape pair ko saath rakho
-    index += 2
-    continue
-if char == SEPARATOR:
-    fields.append("".join(current))    # yahi asli separator hai
-```
-
-Test mein `|`, `\`, newline, aur Hindi text — sab file se wapas bilkul waise hi nikalte hain.
+Isse aage jaakar tum batch script ya notification bhi jod sakte ho — `if errorlevel 1` chalake.
 
 ---
 
-## 🛟 File kharab ho jaye to?
+## 📦 Ek constant file — `tasks.json`
+
+Sab kuch ek hi jagah: settings, history, aur tasks.
+
+```json
+{
+  "name": "Cognifyz Internship - Task 5 task store",
+  "version": 2,
+  "meta": {
+    "created_at": "2026-08-01 09:00:00",
+    "last_opened": "2026-08-17 10:12:30",
+    "open_count": 6,
+    "remind_before_days": 3
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Resume update karo",
+      "description": "placement portal ke liye",
+      "priority": "High",
+      "due_date": "2026-08-15",
+      "status": "pending",
+      "created_at": "2026-08-01 09:00:00",
+      "completed_at": null
+    }
+  ]
+}
+```
+
+Task 3 ke 7 fields ke saath ab **`completed_at`** bhi hai — sirf ye jaanna kaafi nahi tha ki task done hai, ye bhi pata hona chahiye ki **kab** done hua. Wahi "pichhli visit ke baad 2 complete hue" wali line banata hai.
+
+`meta.remind_before_days` menu ke **option 8** se badal sakte ho — 3 din ki jagah 7 din, ya 0 (sirf overdue aur aaj due dikhe).
+
+---
+
+## 🔁 Purana data khoya nahi
+
+Pehle version mein storage `tasks.txt` thi. Agar wo file tumhare paas hai, to program **pehli baar chalte hi**:
+
+1. `tasks.txt` padhta hai (purane 7-field format aur naye 8-field, dono)
+2. Data `tasks.json` mein le aata hai
+3. Purani file ko `tasks.txt.migrated` naam de deta hai — **delete kabhi nahi karta**
+
+`|` wale titles jinme escaping thi, wo bhi sahi-salamat aate hain. Text export (**option 7**) abhi bhi maujood hai, us poore escaping wale code ke saath.
+
+---
+
+## 🛟 File kharab ho jaye to
 
 <div align="center">
 
 ![Recovery demo](assets/recovery_demo.gif)
 
-*File ko jaan-boojh kar bigaada → program ne pakad liya, backup banaya, aur chalta raha*
+*JSON ko jaan-boojh kar bigaada → program ne pakda, backup banaya, aur chalta raha*
 
 </div>
 
-Program **teen kaam** karta hai:
+1. Kharab file `tasks.json.bak` mein **bach jaati hai** (delete kabhi nahi)
+2. Exact path bataya jaata hai
+3. Khaali list se app chalu ho jaata hai
 
-1. Kharab file ko `tasks.txt.bak` naam se **bacha leta hai** (kabhi delete nahi karta)
-2. Exact path bata deta hai kahan bachayi hai
-3. Khaali list se shuru ho jaata hai — taki app khule to sahi
-
-```
-File kharab thi (line 5 padhi nahi ja saki (7 fields chahiye the, 8 mile)).
-  Purani file yahan bacha di gayi hai:
-    .../task5_task_manager_persistent/tasks.txt.bak
-  Khaali list se shuru kar rahe hain.
-```
-
-Agar `.bak` pehle se maujood ho to `.bak.1`, `.bak.2` banti hai — **purana backup kabhi overwrite nahi hota.**
-
----
-
-## 🔒 Atomic write — save karte waqt crash ho jaye to?
-
-Seedha original file par likhna khatarnaak hai. Agar beech mein power chali gayi, to aadhi likhi file bachti hai **aur purana data bhi chala jaata hai.**
-
-Isliye:
-
-```python
-temp = path + ".tmp"
-with open(temp, "w", encoding="utf-8") as handle:
-    ...poori file likho...
-os.replace(temp, path)      # ye ek hi step mein hota hai
-```
-
-`os.replace` atomic hai — file ya to **poori purani** rehti hai ya **poori nayi**. Beech ki koi halat hoti hi nahi. Ek line ka kaam, par production mein isi se data bachta hai.
+`.bak` pehle se ho to `.bak.1`, `.bak.2` banti hai — purana backup kabhi overwrite nahi hota.
 
 ---
 
 <details>
-<summary><b>🧪 Testing — 89/89 checks pass (click karo)</b></summary>
-
-PDF ka step 3 kehta hai *"Test the persistence of task data."*
+<summary><b>🧪 Testing — 110/110 checks pass (click karo)</b></summary>
 
 | Group | Kya check kiya |
 |---|:---:|
-| escape/unescape — 15 nasty strings (`\|`, `\`, `\|\|\|`, newline, Hindi, khaali) | ✅ |
-| Escape ke baad file mein koi bare `\|` ya newline bacha hi nahi | ✅ |
-| `split_fields` escaped `\|` par nahi todta — **aur naive `split()` galat hota, wo bhi prove kiya** | ✅ |
-| Task → line → Task, saare 7 fields wapas | ✅ |
-| Disk par save → load, teen tasks bilkul same | ✅ |
-| **Simulated restart** — banao/save/load/edit/save/load, 5 baar | ✅ |
-| Delete ke baad reload par bhi ID reuse nahi hota | ✅ |
-| File missing → khaali list + friendly message, koi crash nahi | ✅ |
-| Corrupt file ke **5 alag tareeke** — kam fields, galat date, galat id, duplicate id, galat timestamp | ✅ |
-| Har case mein: backup bana, content bacha, message mein path aaya | ✅ |
-| Doosri baar corrupt hone par `.bak.1` bana, pehla backup salamat | ✅ |
-| Comment aur khaali lines ignore hoti hain | ✅ |
-| `.tmp` file save ke baad bachti nahi | ✅ |
-| Na likhne laayak path par saaf `StorageError`, raw traceback nahi | ✅ |
-| JSON export valid, `\|` aur newline usme bhi survive karte hain | ✅ |
-| Hindi text file se wapas bilkul same | ✅ |
-| Khaali list bhi save/load hoti hai | ✅ |
+| `completed_at` — mark_done set kare, mark_pending clear kare, dobara done karne par pehla time na badle | ✅ |
+| `to_dict` ↔ `from_dict` roundtrip, purane 7-field dict bhi load ho | ✅ |
+| JSON store save/load, meta preserve, `\|` wale title theek | ✅ |
+| **Corrupt JSON ke 6 tareeke** — bad syntax, tasks list nahi, top-level array, bad id, bad date, duplicate id | ✅ |
+| Har case: backup bana, content bacha, message mein path aaya | ✅ |
+| **Migration** — v1 (7 field) aur v2 (8 field) dono lines, escaped `\|` bhi | ✅ |
+| Migration ke baad purani file `.migrated` bani, delete nahi hui | ✅ |
+| **Briefing engine** — overdue / aaj due / window ke andar / window ke bahar / bina deadline, sab alag-alag | ✅ |
+| Done task past-due hone par bhi overdue mein **nahi** aata | ✅ |
+| `newly_overdue` sirf wahi jinki deadline pichhli visit **ke baad** nikli | ✅ |
+| `completed_since` aur `created_since` sirf last visit ke baad wale | ✅ |
+| Window clamping — `-5`, `0`, `999`, `"abc"`, `None`, `"7"` sab par sahi behaviour | ✅ |
+| Exit code source — overdue/aaj due par 1, sirf future par 0, done-overdue par 0 | ✅ |
+| Text export roundtrip, `\|` + newline + backslash wale title | ✅ |
+| Na likhne laayak path par saaf `StorageError` | ✅ |
+| `human_gap` — abhi abhi / minute / ghante / kal / din | ✅ |
+
+</details>
+
+<details>
+<summary><b>🐛 Ek bug jo testing ne pakda</b></summary>
+
+Text export ka roundtrip test fail hua. Wajah:
+
+```python
+data = {name: (value if value != "" else None) for name, value in zip(names, fields)}
+```
+
+Maine har khaali field ko `None` bana diya tha. Par khaali **description** ka matlab `None` nahi, `""` hai — "khaali" aur "gayab" do alag cheezein hain. File se wapas aane par description `None` ban jaata tha.
+
+Doosri galti isi se judi thi:
+
+```python
+description=data.get("description", "")
+```
+
+`get(key, default)` default tabhi deta hai jab **key hi na ho**. Yahan key thi, par value `None` thi — to `None` hi mila.
+
+**Fix:**
+
+```python
+nullable = ("due_date", "created_at", "completed_at")   # sirf ye sach mein None ho sakte hain
+description=data.get("description") or ""               # None ho to bhi "" mile
+```
+
+**Sabak:** `None` aur `""` ko ek jaisa mat maano. Aur `dict.get(key, default)` missing key ke liye hai, `None` value ke liye nahi.
 
 </details>
 
 <details>
 <summary><b>⚙️ Design decisions</b></summary>
 
-- **Text file, JSON nahi** — PDF `"a text file"` maangta hai, to primary storage plain text hai. JSON sirf **export** (option 6) hai, kyunki wo doosre tools mein le jaane ke kaam aata hai.
-- **Har badlaav par turant save** — alag "Save" button nahi rakha. "Save karna bhool gaya" wala bug hone hi nahi diya.
-- **Save fail ho to saaf batao** — program keh deta hai ki badlaav sirf memory mein hai. Chupchaap nigalna sabse bura hota.
-- **Corrupt file delete kabhi nahi** — hamesha `.bak` mein bachti hai. User ka data user ka hai.
-- **File mein header comments** — koi bhi file khole to samajh aa jaye ki kaun sa field kaunsa hai. `version` line isliye taaki aage format badle to pata chal sake.
-- **Duplicate ID ko corruption maana** — kyunki `next_id()` `max + 1` par chalta hai, do same ID hone ka matlab file bahar se chhedi gayi hai.
-- **`os.replace`, `os.rename` nahi** — Windows par `rename` maujood file ke upar fail ho jaata hai, `replace` nahi.
+- **JSON primary** — kyunki ab sirf tasks nahi, `meta` bhi store karna hai (last opened, settings, count). Ek-line-ek-task wali text file mein ye nested data fit nahi baithta. JSON bhi ek text file hi hai — notepad mein khul jaati hai.
+- **Text export bacha ke rakha** — PDF `"text file"` maangta hai, aur escaping wala kaam bekaar nahi jaana chahiye. Option 7 se milta hai.
+- **Ek hi source of truth** — dono files ek saath likhna aasaan lagta hai par unke divergence ke bugs sabse gande hote hain. `tasks.json` hi asli hai.
+- **`--check` read-only** — automation user ki history na kha jaye.
+- **`meta` block file ke andar** — settings alag config file mein rakhne se do files sync karni padtin. Ek file, ek sach.
+- **Briefing ka hisaab `build_briefing()` mein, printing `render_briefing()` mein** — logic alag hone se use test karna aasaan hai. 110 mein se 25 checks isi ek function ke hain, bina kuch print kiye.
+- **Corrupt file delete kabhi nahi** — hamesha `.bak`. User ka data user ka hai.
+- **`os.replace`, `os.rename` nahi** — Windows par `rename` maujood file ke upar fail ho jaata hai.
 
 </details>
 
@@ -220,25 +242,37 @@ PDF ka step 3 kehta hai *"Test the persistence of task data."*
 <summary><b>📂 Runtime files (git mein nahi jaati)</b></summary>
 
 ```
-tasks.txt        <- tumhara data
-tasks.json       <- export (option 6)
-tasks.txt.bak    <- corrupt file ka backup, agar kabhi bana
+tasks.json           <- tumhara data
+tasks.txt            <- text export (option 7)
+tasks.json.bak       <- corrupt file ka backup, agar kabhi bana
+tasks.txt.migrated   <- purana version, migration ke baad
 ```
 
-Ye teenon `.gitignore` mein hain — ye **generated data** hai, source code nahi.
+Sab `.gitignore` mein hain — ye generated data hai, source code nahi.
 
 </details>
 
 ---
+
+## 📋 Menu
+
+```
+  1. Naya task banao (Create)        5. Task delete karo (Delete)
+  2. Tasks dekho (Read)              6. Briefing dobara dikhao
+  3. Task edit karo (Update)         7. Text file mein export karo
+  4. Task done mark karo             8. Reminder settings
+                                     9. File ki jaankari
+  0. Exit
+```
 
 ## 📁 Files
 
 ```
 task5_task_manager_persistent/
 ├── README.md
-├── task_manager.py            <- poora program
+├── task_manager.py
 └── assets/
-    ├── persistence_demo.gif
+    ├── briefing_demo.gif
     └── recovery_demo.gif
 ```
 
