@@ -19,3 +19,7 @@ desktop.ini
 
 # Game data (generated at runtime, not source)
 highscores.json
+
+# Scraper output (generated at runtime, not source)
+books.csv
+task6_web_scraper/*.csv
