@@ -1,38 +1,40 @@
-# Python
+# ─────────── Python ───────────
 __pycache__/
 *.py[cod]
 *.pyc
 
-# Virtual environments
+# ─────────── Virtual environments ───────────
 venv/
 env/
 .venv/
 
-# Editor
+# ─────────── Editors / OS ───────────
 .vscode/
 .idea/
-
-# OS
+.DS_Store
 Thumbs.db
 desktop.ini
-.DS_Store
 
-# Game data (generated at runtime, not source)
+# ─────────── Node (Task 6 dashboard) ───────────
+node_modules/
+dist/
+*.tsbuildinfo
+
+# ─────────── Generated at runtime, never source ───────────
+# Task 1 - quiz high scores
 highscores.json
 
-# Scraper output (generated at runtime, not source)
-books.csv
-task6_web_scraper/*.csv
-task6_web_scraper/exports/
-task6_web_scraper/frontend/node_modules/
-task6_web_scraper/frontend/dist/
-task6_web_scraper/frontend/*.tsbuildinfo
-
-# Task 5 runtime data (generated, not source)
+# Task 5 - task store
 task5_task_manager_persistent/tasks.txt
 task5_task_manager_persistent/tasks.json
+
+# Task 6 - scraper reports
+task6_web_scraper/exports/
+task6_web_scraper/*.csv
+books.csv
+
+# ─────────── Backup / temp artefacts ───────────
 *.bak
 *.bak.[0-9]*
 *.tmp
-task5_task_manager_persistent/tasks.txt.migrated
 *.migrated
