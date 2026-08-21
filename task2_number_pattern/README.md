@@ -22,7 +22,7 @@ python pattern_generator.py
 
 No installation. No dependencies. Python 3.6 or above.
 
-Program pattern ka menu dikhayega → aap ek chuno → size do → pattern ban jayega.
+The program shows a menu of patterns; pick one, provide a size, and the pattern is drawn.
 
 ---
 
@@ -30,71 +30,66 @@ Program pattern ka menu dikhayega → aap ek chuno → size do → pattern ban j
 
 ### 🌀 Number Spiral
 
-Numbers `1` se `n×n` tak, bahar se andar ghoomte hue.
+Numbers from `1` to `n × n` written in a spiral, from the outer edge inwards.
 
 <div align="center"><img src="assets/spiral_demo.gif" alt="Number spiral demo" width="700"></div>
 
-Ye **nested loop se ban hi nahi sakta** — kyunki direction badalti rehti hai.
-Iske liye ek *direction vector* chahiye jo deewar aane pe 90° mud jaye:
+This **cannot be produced by a nested loop alone** — the direction changes as the walk progresses. It needs a *direction vector* that rotates by 90° whenever the walk hits a wall or a filled cell:
 
 ```python
 dr, dc = 0, 1                # (0,1)=right  (1,0)=down  (0,-1)=left  (-1,0)=up
 ...
 if blocked:
-    dr, dc = dc, -dr         # ek line mein 90 degree turn
+    dr, dc = dc, -dr         # 90-degree turn in a single line
 ```
 
 ---
 
 ### 🔮 Magic Square
 
-Har row, har column aur **dono diagonals** ka jod barabar aata hai.
+Every row, every column and **both diagonals** sum to the same value.
 
 <div align="center"><img src="assets/magic_demo.gif" alt="Magic square demo" width="700"></div>
 
-Ye *Siamese method* se banta hai — `1` ko top row ke beech mein rakho, phir har agla number
-upar-daayen. Grid se bahar nikal jao to doosri taraf se ghus jao (modulo), aur cell bhara ho
-to ek neeche aa jao.
+Built with the *Siamese method* — place `1` at the top-centre, then move up-and-right for each subsequent number. If the move goes off the grid, wrap around modulo `n`; if the target cell is already filled, drop one row instead.
 
 ```python
-nr, nc = (r - 1) % n, (c + 1) % n     # upar-daayen, wrap around
+nr, nc = (r - 1) % n, (c + 1) % n     # up-and-right with wrap-around
 if grid[nr][nc] != 0:
-    nr, nc = (r + 1) % n, c           # bhara hai -> neeche
+    nr, nc = (r + 1) % n, c           # target filled -> move down instead
 ```
 
-> 💡 Is pattern ki khaas baat: iska output **prove kiya ja sakta hai**. Sirf "dekhne mein sahi
-> lag raha hai" nahi — `n=11` pe 24 alag sums nikalte hain aur sab exactly `671` aate hain.
+> 💡 The distinguishing property of this pattern: the output can be **proved correct**. It is not a matter of "it looks right" — for `n = 11`, twenty-four separate sums all evaluate to exactly `671`.
 
 ---
 
 ### 🔢 Ulam Prime Spiral
 
-Numbers spiral mein rakho, sirf **prime numbers** mark karo — aur diagonal lines apne aap ban jati hain.
+Numbers laid out in a spiral, with only the **primes** marked — diagonal lines emerge on their own.
 
 <div align="center"><img src="assets/ulam_demo.gif" alt="Ulam prime spiral demo" width="600"></div>
 
-Aisa **kyun** hota hai — aaj tak koi nahi jaanta. Stanisław Ulam ne 1963 mein ek boring meeting
-mein doodle karte hue notice kiya tha. Ye maths ka ek **unsolved problem** hai.
+**Why this happens is still an open problem in mathematics.** Stanisław Ulam noticed it while doodling during a dull meeting in 1963.
 
 ---
 
 ## 🔺 The Patterns
 
-Simple se complex tak, teen levels mein:
+From simple to complex, across three levels:
 
 | # | Pattern | Size | Idea |
 |---|---------|------|------|
-| 1 | **Pyramid** | 1–15 | Nested loop + leading spaces |
-| 2 | **Floyd's triangle** | 1–12 | Counter jo rows ke beech reset nahi hota |
-| 3 | **Palindrome pyramid** | 1–12 | Do inner loops — upar chadho, wapas utro |
-| 4 | **Concentric rings** | 2–9 | Value **distance se** nikalti hai, counting se nahi |
-| 5 | **Multiplication grid** | 2–12 | Asli pahada table, headers ke saath |
-| 6 | **Number spiral** | 2–12 | Direction vector + boundary check |
-| 7 | **Magic square** | 3–11 *(odd)* | Siamese method, modulo wrap |
-| 8 | **Ulam prime spiral** | 5–25 *(odd)* | Spiral + primality test |
+| 1 | **Pyramid** | 1–15 | Nested loops + leading spaces |
+| 2 | **Floyd's triangle** | 1–12 | A counter that does not reset between rows |
+| 3 | **Palindrome pyramid** | 1–12 | Two inner loops — climb up, then back down |
+| 4 | **Concentric rings** | 2–9 | Value derived from **distance**, not from a counter |
+| 5 | **Multiplication grid** | 2–12 | A real multiplication table with headers |
+| 6 | **Number spiral** | 2–12 | Direction vector plus boundary check |
+| 7 | **Magic square** | 3–11 *(odd)* | Siamese method with modulo wrap-around |
+| 8 | **Ulam prime spiral** | 5–25 *(odd)* | Spiral plus primality test |
 
 <details>
-<summary><b>Sample output dekho (click)</b></summary>
+<summary><b>See sample output (click)</b></summary>
 
 ```
 Palindrome pyramid (n=5)        Concentric rings (n=4)
@@ -118,11 +113,11 @@ Floyd's triangle (n=5)          4 4 4 4 4 4 4
 
 ---
 
-## ➕ Naya Pattern Add Karna
+## ➕ Adding a New Pattern
 
-Do step:
+Two steps:
 
-**1.** Function likho jo `n` leta hai aur print karta hai:
+**1.** Write a function that takes `n` and prints the pattern:
 
 ```python
 def my_pattern(n):
@@ -132,7 +127,7 @@ def my_pattern(n):
         print()
 ```
 
-**2.** `PATTERNS` mein entry jodo — apne size rules ke saath:
+**2.** Add an entry to `PATTERNS` with its size rules:
 
 ```python
 PATTERNS = {
@@ -141,12 +136,9 @@ PATTERNS = {
 }
 ```
 
-Menu apne aap update ho jayega. `ask_size()` bhi aapke `min`/`max`/`odd` rules **khud** padh lega.
-Koi `if/elif` chain nahi.
+The menu updates on its own, and `ask_size()` reads your `min` / `max` / `odd` rules from the spec directly. No `if / elif` chain is required.
 
-> 💡 Dictionary mein `my_pattern` likha hai, `my_pattern()` **nahi**. Bracket lagane se function
-> *chal* jata hai; bina bracket ke wo ek *cheez* ban jata hai jise baad mein chalaya ja sakta hai.
-> Isiliye `spec["fn"](size)` kaam karta hai.
+> 💡 The dictionary stores `my_pattern`, **not** `my_pattern()`. Parentheses would *call* the function; without them the function itself is stored as a value, to be invoked later. That is why `spec["fn"](size)` works.
 
 ---
 
@@ -171,10 +163,9 @@ From the internship task document:
 <details>
 <summary><h2>🧪 Test Results (click to expand)</h2></summary>
 
-Output ko "dekh ke sahi lag raha hai" se verify nahi kiya — har pattern ki **asli property**
-check ki gayi hai.
+Output correctness was not judged by inspection — each pattern's **actual property** is checked.
 
-### Magic square — 1..n² present, aur saare sums barabar
+### Magic square — 1..n² present, and every sum equal
 
 | n | Sums checked | Every sum equals | 1..n² all present | Result |
 |---|---|---|---|---|
@@ -186,15 +177,15 @@ check ki gayi hai.
 
 *(n rows + n columns + 2 diagonals)*
 
-### Number spiral — har cell exactly ek baar
+### Number spiral — each cell filled exactly once
 
 | n | Check | Result |
 |---|---|---|
 | 2, 3, 5, 8, 12 | Flattened grid equals `1..n²` exactly once | PASS |
 
-Ye test spiral ke chhootne aur dobara likhne — dono ko pakad leta.
+This test catches both missed cells and duplicate cells.
 
-### Ulam spiral — `#` sirf primes pe
+### Ulam spiral — `#` only on primes
 
 | n | `#` count | Primes ≤ n² | Result |
 |---|---|---|---|
@@ -203,58 +194,54 @@ Ye test spiral ke chhootne aur dobara likhne — dono ko pakad leta.
 | 17 | 61 | 61 | PASS |
 | 25 | 114 | 114 | PASS |
 
-`is_prime()` ko alag se pehle 22 primes (2–79) se compare kiya — PASS.
+`is_prime()` was independently validated against 22 known primes (2–79) — PASS.
 
-### Baaki
+### Others
 
 | Pattern | Check | Result |
 |---|---|---|
-| Palindrome pyramid | Har row `row == row[::-1]`, aur exactly n rows | PASS |
+| Palindrome pyramid | Each row `row == row[::-1]`, and exactly n rows | PASS |
 | Concentric rings | Grid `(2n-1)²`, centre = 1, corner = n | PASS |
-| **All 8** | Apne `min` size pe chalte hain, koi crash nahi | PASS |
+| **All 8** | Run at their minimum size without crashing | PASS |
 
 ### Input validation
 
-| Input | Kahan | Behaviour |
+| Input | Where | Behaviour |
 |-------|-------|-----------|
-| `abc`, *(khali)* | Dono prompts | "Sirf number likho", dobara poochta hai |
-| `0`, `99` | Pattern menu | "1 se 8 ke beech likho" |
-| `0`, `-5`, `500` | Size prompt | Pattern ke apne range ka message |
-| `4` | Magic square size | "Odd number chahiye. Try 5 ya 3." |
+| `abc`, *(empty)* | Both prompts | "Enter a number", re-prompt |
+| `0`, `99` | Pattern menu | "Enter a number between 1 and 8" |
+| `0`, `-5`, `500` | Size prompt | Pattern-specific range message |
+| `4` | Magic square size | "Size must be odd. Try 5 or 3." |
 
 </details>
 
 <details>
 <summary><h2>🏗️ Design Notes (click to expand)</h2></summary>
 
-### Nested loops — is task ka core
+### Nested loops — the core of this task
 
 ```python
-for row in range(1, n + 1):        # outer: kitni lines
-    for col in range(1, row + 1):  # inner: is line pe kitne number
+for row in range(1, n + 1):        # outer: how many lines
+    for col in range(1, row + 1):  # inner: how many numbers on this line
         print(col, end=" ")
-    print()                        # line khatam
+    print()                        # end of line
 ```
 
-Outer loop ek baar ghoomta hai to inner **poora** ghoom jata hai. Inner loop ki limit `row` pe
-depend karti hai — isiliye har line pichhli se lambi hoti hai.
+Each iteration of the outer loop drives the inner loop to completion. The inner loop's limit depends on `row`, so each line is longer than the last.
 
-`print(..., end=" ")` normal newline ko rok deta hai, isliye numbers ek line mein rehte hain.
-Inner loop ke baad khali `print()` line todta hai.
+`print(..., end=" ")` suppresses the automatic newline, keeping numbers on the same line. The bare `print()` after the inner loop terminates the line.
 
-### Jahan nested loop kaafi nahi padta
+### Where nested loops are not enough
 
-Spiral aur Ulam mein rows aur columns ka simple relation hai hi nahi — position **direction** se
-badalti hai. Iske liye chahiye:
+Spiral and Ulam patterns have no simple mapping from rows and columns — position advances by **direction**, not by index. That requires:
 
-- Ek 2D grid jisme likha ja sake — `[[0] * n for _ in range(n)]`
-- Direction vector `(dr, dc)` aur ek turn rule — `dr, dc = dc, -dr`
-- Boundary aur "already filled" check
+- A writable 2D grid — `[[0] * n for _ in range(n)]`
+- A direction vector `(dr, dc)` and a turn rule — `dr, dc = dc, -dr`
+- A boundary check and an "already filled" check
 
-Magic square mein modulo se wrap-around hota hai — `(r - 1) % n` — taaki grid ke bahar jaane pe
-doosri taraf se entry mile.
+The magic square uses modulo wrap-around — `(r - 1) % n` — so an out-of-grid move re-enters from the opposite side.
 
-### Har pattern apne rules khud carry karta hai
+### Every pattern carries its own rules
 
 ```python
 PATTERNS = {
@@ -262,25 +249,19 @@ PATTERNS = {
 }
 ```
 
-`ask_size()` ye rules **spec se padhta hai**, hardcode nahi karta. Isliye "magic square sirf odd
-pe chalta hai" wali baat sirf **ek jagah** likhi hai — us pattern ki entry mein. Naya pattern
-apne alag rules ke saath aa sakta hai, aur `ask_size()` badalna nahi padega.
+`ask_size()` reads those rules **from the spec** rather than hard-coding them. The constraint "the magic square only accepts odd sizes" is therefore stated in exactly one place — its own registry entry. A new pattern can bring its own rules without any change to `ask_size()`.
 
-Ye Task 1 ke `questions.json` wali hi soch hai — **data alag, logic alag**.
+This is the same idea as Task 1's `questions.json` — **data is separated from logic**.
 
-### Task 1 se reuse
+### Reuse from Task 1
 
-`ask_choice()` bilkul wahi function hai jo `quiz_game.py` mein hai. `ask_size()` `get_guess()`
-ke shape pe bana hai: `try/except ValueError` conversion ke liye, phir `if` apne rules ke liye.
+`ask_choice()` is the same helper used in `quiz_game.py`. `ask_size()` mirrors the shape of `get_guess()`: `try/except ValueError` for the type conversion, followed by `if` for the domain rule.
 
-Use `try/except` when the only way to know is to attempt the operation; use `if` when the rule
-can be checked in advance.
+Use `try/except` when the only way to know is to attempt the operation; use `if` when the rule can be checked in advance.
 
 ### Size caps
 
-Har pattern ka apna max hai. Ulam 25 tak jata hai (pattern dikhne ke liye jagah chahiye), magic
-square 11 tak (uske aage columns tedhe lagne lagte hain), Floyd 12 tak (numbers 78 tak pahunch
-jaate hain). Ye usability decisions hain, `PATTERNS` mein data ki tarah rakhe hue.
+Each pattern has its own maximum. Ulam is capped at 25 (any smaller and the diagonal structure is not visible), magic square at 11 (larger sizes distort columns visually), Floyd at 12 (values reach 78). These are usability decisions expressed as data in `PATTERNS`.
 
 </details>
 

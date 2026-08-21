@@ -5,27 +5,27 @@
 **Cognifyz Technologies · Software Development Internship · Level 3**
 
 ![Python](https://img.shields.io/badge/Python-3.6%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Install](https://img.shields.io/badge/Install-Kuch%20nahi-success?style=for-the-badge)
+![Install](https://img.shields.io/badge/Install-None-success?style=for-the-badge)
 ![Checks](https://img.shields.io/badge/Checks-110%2F110%20pass-brightgreen?style=for-the-badge)
 ![Storage](https://img.shields.io/badge/Store-tasks.json-orange?style=for-the-badge)
 
-Ek constant JSON file mein tasks jama hote rehte hain.
-Har baar program khulte hi batata hai: **kya overdue hai, kya aaj due hai,
-kya aane wala hai, aur pichhli baar ke baad kya badla.**
+A single JSON file that persists tasks across runs.
+Every launch produces a briefing: **what is overdue, what is due today,
+what is coming up, and what has changed since the last visit.**
 
 </div>
 
-> Ye khud jaakar koi kaam nahi karta. Ye **yaad dilata hai** — kya karna hai, kab tak karna hai, aur kaunsi deadline nikal chuki hai.
+> The program does not perform tasks on your behalf. It **reminds** — what to do, by when, and which deadlines have already passed.
 
 ---
 
-## 🚀 Chalao
+## 🚀 Run
 
 ```bash
 python task5_task_manager_persistent/task_manager.py
 ```
 
-Sirf briefing chahiye, app nahi:
+Briefing only, no interactive app:
 
 ```bash
 python task5_task_manager_persistent/task_manager.py --check
@@ -39,75 +39,75 @@ python task5_task_manager_persistent/task_manager.py --check
 
 ![Briefing demo](assets/briefing_demo.gif)
 
-*App khulte hi briefing → ek task done → phir `--check` mode, jise Task Scheduler roz chalata hai*
+*App launches with a briefing → one task marked done → then `--check` mode, the entry point Task Scheduler invokes daily*
 
 </div>
 
-Briefing kuch aisi dikhti hai:
+The briefing looks like this:
 
 ```
 ==============================================================
-  AAJ KA BRIEFING  -  Wednesday, 19 August 2026
+  TODAY'S BRIEFING  -  Wednesday, 19 August 2026
 ==============================================================
 
-  Pichhli baar: 2 din pehle   (kul 6 baar khola)
+  Last visit: 2 days ago   (6 opens in total)
 
   !! OVERDUE (2)
-     #1   Resume update karo         High      4 din se overdue
-     #2   Assignment submit karo     High      1 din se overdue
+     #1   Update the resume            High      4 days overdue
+     #2   Submit the assignment        High      1 day overdue
 
-  >> AAJ DUE (1)
-     #3   Task 5 ka README likho     High      aaj due
+  >> DUE TODAY (1)
+     #3   Write the Task 5 README      High      due today
 
-  .. AGLE 3 DIN (1)
-     #4   Gym membership renew       Medium    2 din baad
+  .. NEXT 3 DAYS (1)
+     #4   Renew gym membership         Medium    2 days ahead
 
-  Pichhli visit ke baad: 1 overdue ho gaye, 1 complete hue, 1 naye bane.
+  Since last visit: 1 became overdue, 1 completed, 1 created.
 
-  Kul 8 task | 7 pending | 1 done | 1 bina deadline
+  Total 8 tasks | 7 pending | 1 done | 1 without a deadline
 ==============================================================
 ```
 
-**"Pichhli visit ke baad" wali line hi is task ka dil hai.** Wo kisi alag log file se nahi aati — program `meta.last_opened`, har task ka `created_at`, aur `completed_at` compare karke khud nikaal leta hai.
+**The "since last visit" line is the heart of this task.** It is not read from a separate log file — the program computes it by comparing `meta.last_opened`, each task's `created_at`, and its `completed_at`.
 
 ---
 
-## ⏰ Roz apne aap chalane ke liye (Windows Task Scheduler)
+## ⏰ Running it automatically on Windows
 
-Python script **khud se nahi jaag sakta** — wo tabhi chalta hai jab koi use chalaye. Asli automation ke liye Windows ko bolna padta hai:
+A Python script cannot **wake itself up** — it runs only when something invokes it. True automation is delegated to Windows Task Scheduler:
 
-1. Start menu mein **Task Scheduler** kholo
-2. **Create Basic Task** → naam do, jaise `Task reminders`
-3. Trigger: **When I log on** (ya **Daily**, apna time chuno)
+1. Open **Task Scheduler** from the Start menu.
+2. **Create Basic Task** → give it a name, for example `Task reminders`.
+3. Trigger: **When I log on** (or **Daily** at a chosen time).
 4. Action: **Start a program**
    - Program: `python`
    - Arguments: `"C:\Users\...\task5_task_manager_persistent\task_manager.py" --check`
-5. Finish
+5. Finish.
 
-Ab har login par briefing khud dikh jayegi.
+The briefing will now appear every time you log in.
 
-> Exact command program ke andar bhi mil jaayega — **option 9 (File ki jaankari)** chalao, wo tumhare computer ka poora path likhkar de dega.
+> The exact command can also be retrieved from within the program — option 9 (**File info**) prints the correct absolute path for your machine.
 
-### `--check` mode ke do design decisions
+### Two design decisions in `--check` mode
 
-**1. Wo `last_opened` ko haath nahi lagata.**
-Agar lagata, to Task Scheduler roz chal-chalkar "pichhli visit ke baad kya badla" khud hi kha jaata — aur tum jab app kholte, tumhe kabhi kuch naya dikhta hi nahi. Isliye visit sirf tab record hoti hai jab **tum** app kholte ho.
+**1. It does not touch `last_opened`.**
+If it did, the daily Task Scheduler run would consume the "since last visit" delta itself, and you would never see it when you actually opened the app. `last_opened` is therefore only updated when **you** open the app interactively.
 
-**2. Wo exit code deta hai.**
+**2. It returns a meaningful exit code.**
 
-| Code | Matlab |
+| Code | Meaning |
 |:---:|---|
-| `0` | kuch urgent nahi |
-| `1` | kuch overdue hai ya aaj due hai |
-| `2` | file hi nahi khul paayi |
+| `0` | Nothing urgent |
+| `1` | Something is overdue or due today |
+| `2` | The store could not be opened |
 
-Isse aage jaakar tum batch script ya notification bhi jod sakte ho — `if errorlevel 1` chalake.
+This makes it easy to chain a batch script or notification — for example, `if errorlevel 1`.
 
 ---
 
-## 📦 Ek constant file — `tasks.json`
+## 📦 One canonical file — `tasks.json`
 
-Sab kuch ek hi jagah: settings, history, aur tasks.
+Settings, history and tasks all live in a single place.
 
 ```json
 {
@@ -122,8 +122,8 @@ Sab kuch ek hi jagah: settings, history, aur tasks.
   "tasks": [
     {
       "id": 1,
-      "title": "Resume update karo",
-      "description": "placement portal ke liye",
+      "title": "Update the resume",
+      "description": "for the placement portal",
       "priority": "High",
       "due_date": "2026-08-15",
       "status": "pending",
@@ -134,121 +134,121 @@ Sab kuch ek hi jagah: settings, history, aur tasks.
 }
 ```
 
-Task 3 ke 7 fields ke saath ab **`completed_at`** bhi hai — sirf ye jaanna kaafi nahi tha ki task done hai, ye bhi pata hona chahiye ki **kab** done hua. Wahi "pichhli visit ke baad 2 complete hue" wali line banata hai.
+In addition to Task 3's seven fields, each task now carries `completed_at`. Knowing a task is done was not enough — it also had to be clear **when** it was done. That is what enables the "1 completed since last visit" line.
 
-`meta.remind_before_days` menu ke **option 8** se badal sakte ho — 3 din ki jagah 7 din, ya 0 (sirf overdue aur aaj due dikhe).
-
----
-
-## 🔁 Purana data khoya nahi
-
-Pehle version mein storage `tasks.txt` thi. Agar wo file tumhare paas hai, to program **pehli baar chalte hi**:
-
-1. `tasks.txt` padhta hai (purane 7-field format aur naye 8-field, dono)
-2. Data `tasks.json` mein le aata hai
-3. Purani file ko `tasks.txt.migrated` naam de deta hai — **delete kabhi nahi karta**
-
-`|` wale titles jinme escaping thi, wo bhi sahi-salamat aate hain. Text export (**option 7**) abhi bhi maujood hai, us poore escaping wale code ke saath.
+`meta.remind_before_days` is configurable via menu option 8 — the reminder window can be widened to 7 days or set to 0 (show only overdue and due-today items).
 
 ---
 
-## 🛟 File kharab ho jaye to
+## 🔁 Old data is preserved
+
+An earlier version of the project stored data in `tasks.txt`. If that file exists, the program will, **on first run**:
+
+1. Read `tasks.txt` (both the 7-field legacy format and the 8-field current one).
+2. Migrate the data into `tasks.json`.
+3. Rename the old file to `tasks.txt.migrated` — **never deleting it**.
+
+Titles containing `|` with the correct escaping are migrated intact. The text export (menu option 7) is still available, including its escaping logic.
+
+---
+
+## 🛟 If the file becomes corrupt
 
 <div align="center">
 
 ![Recovery demo](assets/recovery_demo.gif)
 
-*JSON ko jaan-boojh kar bigaada → program ne pakda, backup banaya, aur chalta raha*
+*JSON deliberately damaged → the program detects it, saves a backup, and starts cleanly*
 
 </div>
 
-1. Kharab file `tasks.json.bak` mein **bach jaati hai** (delete kabhi nahi)
-2. Exact path bataya jaata hai
-3. Khaali list se app chalu ho jaata hai
+1. The corrupt file is **preserved as** `tasks.json.bak` (never deleted).
+2. The exact path of the backup is reported to the user.
+3. The app starts with an empty list.
 
-`.bak` pehle se ho to `.bak.1`, `.bak.2` banti hai — purana backup kabhi overwrite nahi hota.
+If a `.bak` already exists, the program creates `.bak.1`, `.bak.2`, etc. — no previous backup is ever overwritten.
 
 ---
 
 <details>
-<summary><b>🧪 Testing — 110/110 checks pass (click karo)</b></summary>
+<summary><b>🧪 Testing — 110/110 checks pass (click to expand)</b></summary>
 
-| Group | Kya check kiya |
+| Group | What was checked |
 |---|:---:|
-| `completed_at` — mark_done set kare, mark_pending clear kare, dobara done karne par pehla time na badle | ✅ |
-| `to_dict` ↔ `from_dict` roundtrip, purane 7-field dict bhi load ho | ✅ |
-| JSON store save/load, meta preserve, `\|` wale title theek | ✅ |
-| **Corrupt JSON ke 6 tareeke** — bad syntax, tasks list nahi, top-level array, bad id, bad date, duplicate id | ✅ |
-| Har case: backup bana, content bacha, message mein path aaya | ✅ |
-| **Migration** — v1 (7 field) aur v2 (8 field) dono lines, escaped `\|` bhi | ✅ |
-| Migration ke baad purani file `.migrated` bani, delete nahi hui | ✅ |
-| **Briefing engine** — overdue / aaj due / window ke andar / window ke bahar / bina deadline, sab alag-alag | ✅ |
-| Done task past-due hone par bhi overdue mein **nahi** aata | ✅ |
-| `newly_overdue` sirf wahi jinki deadline pichhli visit **ke baad** nikli | ✅ |
-| `completed_since` aur `created_since` sirf last visit ke baad wale | ✅ |
-| Window clamping — `-5`, `0`, `999`, `"abc"`, `None`, `"7"` sab par sahi behaviour | ✅ |
-| Exit code source — overdue/aaj due par 1, sirf future par 0, done-overdue par 0 | ✅ |
-| Text export roundtrip, `\|` + newline + backslash wale title | ✅ |
-| Na likhne laayak path par saaf `StorageError` | ✅ |
-| `human_gap` — abhi abhi / minute / ghante / kal / din | ✅ |
+| `completed_at` set by mark_done, cleared by mark_pending, does not shift on repeat done | ✅ |
+| `to_dict` ↔ `from_dict` roundtrip; legacy 7-field dictionaries also load | ✅ |
+| JSON store save / load; meta preserved; `\|`-containing titles handled correctly | ✅ |
+| **Six flavours of corrupt JSON** — bad syntax, missing tasks list, top-level array, bad id, bad date, duplicate id | ✅ |
+| For each case: backup created, content preserved, path reported in the message | ✅ |
+| **Migration** — v1 (7 field) and v2 (8 field) lines both handled, including escaped `\|` | ✅ |
+| After migration, the original file is renamed `.migrated`, not deleted | ✅ |
+| **Briefing engine** — overdue / due today / inside window / outside window / no deadline all classified separately | ✅ |
+| A done task past its deadline is never classified as overdue | ✅ |
+| `newly_overdue` includes only items whose deadline expired after the last visit | ✅ |
+| `completed_since` and `created_since` filter strictly to events after last visit | ✅ |
+| Window clamping — `-5`, `0`, `999`, `"abc"`, `None`, `"7"` all handled correctly | ✅ |
+| Exit code source — 1 for overdue or due today, 0 for future-only, 0 when a done task is past-due | ✅ |
+| Text export roundtrip with `\|`, newline and backslash in titles | ✅ |
+| Clean `StorageError` on a non-writable path | ✅ |
+| `human_gap` — just now / minutes / hours / yesterday / days | ✅ |
 
 </details>
 
 <details>
-<summary><b>🐛 Ek bug jo testing ne pakda</b></summary>
+<summary><b>🐛 A bug that testing caught</b></summary>
 
-Text export ka roundtrip test fail hua. Wajah:
+The text-export roundtrip test failed. The cause:
 
 ```python
 data = {name: (value if value != "" else None) for name, value in zip(names, fields)}
 ```
 
-Maine har khaali field ko `None` bana diya tha. Par khaali **description** ka matlab `None` nahi, `""` hai — "khaali" aur "gayab" do alag cheezein hain. File se wapas aane par description `None` ban jaata tha.
+Every empty field was being converted to `None`. But an empty **description** does not mean `None`; it means `""` — "empty" and "absent" are different things. When the data was reloaded, `description` came back as `None`.
 
-Doosri galti isi se judi thi:
+The second half of the bug was related:
 
 ```python
 description=data.get("description", "")
 ```
 
-`get(key, default)` default tabhi deta hai jab **key hi na ho**. Yahan key thi, par value `None` thi — to `None` hi mila.
+`get(key, default)` returns the default only when the **key is missing**. Here the key was present but the value was `None`, so `None` was returned.
 
 **Fix:**
 
 ```python
-nullable = ("due_date", "created_at", "completed_at")   # sirf ye sach mein None ho sakte hain
-description=data.get("description") or ""               # None ho to bhi "" mile
+nullable = ("due_date", "created_at", "completed_at")   # only these can legitimately be None
+description=data.get("description") or ""               # coerce None to ""
 ```
 
-**Sabak:** `None` aur `""` ko ek jaisa mat maano. Aur `dict.get(key, default)` missing key ke liye hai, `None` value ke liye nahi.
+**Lesson:** do not conflate `None` with `""`. And `dict.get(key, default)` handles missing keys, not `None` values.
 
 </details>
 
 <details>
 <summary><b>⚙️ Design decisions</b></summary>
 
-- **JSON primary** — kyunki ab sirf tasks nahi, `meta` bhi store karna hai (last opened, settings, count). Ek-line-ek-task wali text file mein ye nested data fit nahi baithta. JSON bhi ek text file hi hai — notepad mein khul jaati hai.
-- **Text export bacha ke rakha** — PDF `"text file"` maangta hai, aur escaping wala kaam bekaar nahi jaana chahiye. Option 7 se milta hai.
-- **Ek hi source of truth** — dono files ek saath likhna aasaan lagta hai par unke divergence ke bugs sabse gande hote hain. `tasks.json` hi asli hai.
-- **`--check` read-only** — automation user ki history na kha jaye.
-- **`meta` block file ke andar** — settings alag config file mein rakhne se do files sync karni padtin. Ek file, ek sach.
-- **Briefing ka hisaab `build_briefing()` mein, printing `render_briefing()` mein** — logic alag hone se use test karna aasaan hai. 110 mein se 25 checks isi ek function ke hain, bina kuch print kiye.
-- **Corrupt file delete kabhi nahi** — hamesha `.bak`. User ka data user ka hai.
-- **`os.replace`, `os.rename` nahi** — Windows par `rename` maujood file ke upar fail ho jaata hai.
+- **JSON as the primary store** — the file no longer contains only tasks; it also carries `meta` (last opened, settings, count). Nested data of that shape does not fit a one-line-per-task text format cleanly. JSON is still a plain text file — it opens in any editor.
+- **Text export retained** — the brief requires a `"text file"`, and the escaping code should not go to waste. Menu option 7 produces it.
+- **Single source of truth** — writing to two files simultaneously seems easy but produces the worst class of bug when the files drift. `tasks.json` is authoritative.
+- **`--check` is read-only** — automation must not consume the user's history.
+- **`meta` embedded in the file** — a separate config file would require two files to stay in sync. One file, one truth.
+- **Briefing computation in `build_briefing()`, presentation in `render_briefing()`** — the compute layer can be unit-tested without any I/O. 25 of the 110 checks target that single function directly.
+- **Corrupt file is never deleted — always `.bak`** — the user's data belongs to the user.
+- **`os.replace`, not `os.rename`** — on Windows, `rename` fails when the destination already exists.
 
 </details>
 
 <details>
-<summary><b>📂 Runtime files (git mein nahi jaati)</b></summary>
+<summary><b>📂 Runtime files (git-ignored)</b></summary>
 
 ```
-tasks.json           <- tumhara data
+tasks.json           <- your data
 tasks.txt            <- text export (option 7)
-tasks.json.bak       <- corrupt file ka backup, agar kabhi bana
-tasks.txt.migrated   <- purana version, migration ke baad
+tasks.json.bak       <- backup of a corrupt file, if any
+tasks.txt.migrated   <- pre-migration copy of the old format
 ```
 
-Sab `.gitignore` mein hain — ye generated data hai, source code nahi.
+All of the above are covered by `.gitignore` — these are generated data, not source.
 
 </details>
 
@@ -257,11 +257,11 @@ Sab `.gitignore` mein hain — ye generated data hai, source code nahi.
 ## 📋 Menu
 
 ```
-  1. Naya task banao (Create)        5. Task delete karo (Delete)
-  2. Tasks dekho (Read)              6. Briefing dobara dikhao
-  3. Task edit karo (Update)         7. Text file mein export karo
-  4. Task done mark karo             8. Reminder settings
-                                     9. File ki jaankari
+  1. Create a new task              5. Delete a task
+  2. View tasks                     6. Show the briefing again
+  3. Update a task                  7. Export to text file
+  4. Mark a task as done            8. Reminder settings
+                                    9. File info
   0. Exit
 ```
 

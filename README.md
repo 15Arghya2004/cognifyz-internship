@@ -14,7 +14,7 @@
 ![Levels](https://img.shields.io/badge/Levels-Beginner%20→%20Advanced-orange?style=flat-square)
 ![Install](https://img.shields.io/badge/Tasks%201–5-zero%20dependencies-success?style=flat-square)
 
-### Saare 6 tasks · teenon levels · har ek apne README ke saath
+### All six tasks · three levels · each with its own README
 
 ![All six tasks running](assets/showreel.gif)
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 🚀 60 seconds mein shuru karo
+## 🚀 Start in 60 seconds
 
 ```bash
 git clone https://github.com/15Arghya2004/cognifyz-internship.git
@@ -30,57 +30,57 @@ cd cognifyz-internship
 python task1_text_based_game/quiz_game.py
 ```
 
-Tasks 1–5 ko **kuch install nahi karna** — sirf Python 3.6+. Sirf Task 6 ko libraries chahiye.
+Tasks 1 through 5 need **nothing installed** — just Python 3.6 or above. Only Task 6 has additional dependencies.
 
 ---
 
 ## 📋 Tasks
 
-| # | Level | Project | Ek line mein |
+| # | Level | Project | In one line |
 |:-:|:-:|---|---|
-| **1** | 🟢 Beginner | [Text-Based Games](task1_text_based_game/) | Number guessing + JSON se chalne wala quiz |
-| **2** | 🟢 Beginner | [Number Patterns](task2_number_pattern/) | 8 patterns — spiral, magic square, Ulam prime spiral |
-| **3** | 🟡 Intermediate | [Task Manager (CRUD)](task3_task_manager_crud/) | `Task` class ke saath poora CRUD |
-| **4** | 🟡 Intermediate | [Health Temperature Toolkit](task4_temperature_converter/) | C↔F + fever, heat index, wind chill |
-| **5** | 🔴 Advanced | [Persistent Manager + Reminders](task5_task_manager_persistent/) | JSON store + deadline briefing |
-| **6** | 🔴 Advanced | [Interactive Web Scraper](task6_web_scraper/) | CLI + FastAPI + React dashboard |
+| **1** | 🟢 Beginner | [Text-Based Games](task1_text_based_game/) | Number guessing game and a JSON-driven quiz |
+| **2** | 🟢 Beginner | [Number Patterns](task2_number_pattern/) | Eight patterns including spiral, magic square, and Ulam prime spiral |
+| **3** | 🟡 Intermediate | [Task Manager (CRUD)](task3_task_manager_crud/) | Full CRUD around a `Task` class |
+| **4** | 🟡 Intermediate | [Health Temperature Toolkit](task4_temperature_converter/) | C↔F converter with fever, heat index and wind chill guidance |
+| **5** | 🔴 Advanced | [Persistent Manager + Reminders](task5_task_manager_persistent/) | JSON-backed store with deadline briefing |
+| **6** | 🔴 Advanced | [Interactive Web Scraper](task6_web_scraper/) | CLI, FastAPI service and a React dashboard |
 
-Internship ke liye **4 tasks kaafi the.** Saare 6 kiye.
+The internship requirement was **any four tasks.** All six are included.
 
 ---
 
-## 🔍 Har task kya karta hai
+## 🔍 What each task does
 
 <details open>
 <summary><b>🟢 Level 1 — Beginner</b></summary>
 
-**Task 1 · Text-Based Games** — Do games. Number guessing `while` loop aur `try/except` sikhata hai. Quiz apne 30 sawaal ek **JSON file se** padhta hai — topic aur difficulty filter, har baar random 5 sawaal, aur high score file.
+**Task 1 · Text-Based Games** — Two games. The number guessing game demonstrates a `while` loop and `try/except` for input validation. The quiz reads a bank of 30 questions from a **JSON file**, supports topic and difficulty filters, picks five random questions per session, and persists high scores.
 
-**Task 2 · Number Patterns** — Pyramid se aage. **Number spiral**, **magic square** (Siamese method), aur **Ulam prime spiral**. Har pattern **property se verify** kiya gaya, aankh se nahi — magic square ke saare row/column/diagonal sums barabar, spiral mein `1..n²` exactly ek baar.
+**Task 2 · Number Patterns** — Goes beyond the standard pyramid. Includes a **number spiral**, a **magic square** (Siamese method), and the **Ulam prime spiral**. Each pattern is **verified by its mathematical properties**, not by eye — every row, column and diagonal of the magic square must sum to the same value, and the spiral must contain each number from `1..n²` exactly once.
 
 </details>
 
 <details open>
 <summary><b>🟡 Level 2 — Intermediate</b></summary>
 
-**Task 3 · Console Task Manager** — Pehla OOP task. Priority, due date, overdue detection, auto-sorting. README dikhata hai ki *parallel arrays problem* kya hai aur class use kaise theek karti hai.
+**Task 3 · Console Task Manager** — The first object-oriented task. Priority, due date, overdue detection and automatic sorting. The README explains the *parallel-arrays problem* and shows how introducing a class eliminates it.
 
-**Task 4 · Health Temperature Toolkit** — PDF sirf C↔F maangta tha. Uske upar teen health tools bane: body temperature check jo **kahan se naapa** uske hisaab se adjust karta hai (bagal vs rectal), heat index (NOAA formula), wind chill (NWS). **Har clinical number cited hai** — Mayo Clinic, NIH StatPearls, NOAA, NWS.
+**Task 4 · Health Temperature Toolkit** — The task brief only required C↔F conversion. This project extends that with three health tools: a body-temperature check that **adjusts for the measurement site** (armpit vs rectal, for example), a heat-index calculator (NOAA formula), and a wind-chill calculator (NWS formula). **Every clinical value is cited** — Mayo Clinic, NIH StatPearls, NOAA and NWS.
 
 </details>
 
 <details open>
 <summary><b>🔴 Level 3 — Advanced</b></summary>
 
-**Task 5 · Persistent Manager + Reminders** — Task 3 ka app, ab `tasks.json` mein save hota hai. Khulte hi briefing: kya overdue hai, kya aaj due hai, aur **pichhli visit ke baad kya badla**. `--check` mode Windows Task Scheduler se roz apne aap chal sakta hai.
+**Task 5 · Persistent Manager + Reminders** — Task 3's application, now persisting to `tasks.json`. On every launch it presents a briefing: what is overdue, what is due today, and **what has changed since the last visit**. `--check` mode is designed to run daily under Windows Task Scheduler.
 
-**Task 6 · Interactive Web Scraper** — Asli HTML scraping (`requests` + `BeautifulSoup`), ek FastAPI JSON layer, aur ek React dashboard. **Terminal developers ke liye, browser users ke liye.** HTTPS-only, domain allowlist, private-IP rejection, redirect validation, aur CSV/JSON/PDF export. 38 tests.
+**Task 6 · Interactive Web Scraper** — Real HTML scraping (`requests` + `BeautifulSoup`), a FastAPI JSON layer, and a React dashboard. **For terminal users and browser users alike.** HTTPS-only, domain allowlist, private-IP rejection, redirect validation, and CSV / JSON / PDF exports. 38 tests.
 
 </details>
 
 ---
 
-## ▶️ Chalane ke commands
+## ▶️ Commands to run each task
 
 ```bash
 # Level 1
@@ -94,10 +94,10 @@ python task4_temperature_converter/temperature_converter.py
 
 # Level 3
 python task5_task_manager_persistent/task_manager.py
-python task5_task_manager_persistent/task_manager.py --check   # sirf reminder briefing
+python task5_task_manager_persistent/task_manager.py --check   # briefing only
 ```
 
-**Task 6** — dependencies chahiye:
+**Task 6** requires dependencies:
 
 ```bash
 pip install -r task6_web_scraper/requirements.txt
@@ -105,7 +105,7 @@ pip install -r task6_web_scraper/requirements.txt
 python task6_web_scraper/book_scraper.py        # terminal version
 ```
 
-Browser dashboard ke liye (pehli baar `cd task6_web_scraper/frontend && npm install`):
+For the browser dashboard (one-time `cd task6_web_scraper/frontend && npm install`):
 
 ```powershell
 .\task6_web_scraper\run.ps1      # Windows
@@ -119,9 +119,9 @@ Browser dashboard ke liye (pehli baar `cd task6_web_scraper/frontend && npm inst
 
 ## ✅ Testing
 
-Har task apne verification ke saath aaya, guess se nahi.
+Every task ships with its own verification — no assumptions.
 
-| Task | Checks | Kya verify hua |
+| Task | Checks | What is verified |
 |:-:|:-:|---|
 | 2 | property-based | magic square sums, spiral completeness, prime counts |
 | 3 | 44 | CRUD, overdue logic, ID reuse, date validation |
@@ -129,7 +129,7 @@ Har task apne verification ke saath aaya, guess se nahi.
 | 5 | 110 | escaping, atomic writes, corrupt-file recovery, briefing engine |
 | 6 | **38** | parsing, URL safety, redirect rejection, API contract, regressions |
 
-Task 6 ka suite repo mein hai aur offline chalta hai:
+Task 6's suite lives in the repository and runs entirely offline:
 
 ```bash
 python -m unittest discover -s task6_web_scraper/tests -v
@@ -154,10 +154,10 @@ cognifyz-internship/
 └── task6_web_scraper/           README · book_scraper.py · api.py · tests/ · frontend/
 ```
 
-Har task folder mein apna **README + animated demos** hain.
-`practice/` folders mein seekhte waqt likhe chhote scripts hain — jaan-boojh kar rakhe, wo dikhate hain final code tak kaise pahuncha.
+Every task folder ships with its own **README and animated demo**.
+The `practice/` folders contain the small scripts written while learning — kept deliberately, they show the path from first attempt to the final code.
 
-Runtime files (`tasks.json`, `highscores.json`, `exports/`, `node_modules/`, `dist/`) `.gitignore` mein hain — wo generated data hai, source nahi.
+Runtime files (`tasks.json`, `highscores.json`, `exports/`, `node_modules/`, `dist/`) are covered by `.gitignore` — these are generated data, not source.
 
 ---
 

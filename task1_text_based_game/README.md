@@ -18,13 +18,13 @@
 No installation. No `pip install`. No virtual environment. Just Python.
 
 ```bash
-# 1. Repo clone karo
+# 1. Clone the repository
 git clone https://github.com/15Arghya2004/cognifyz-internship.git
 
-# 2. Is folder mein aao
+# 2. Move into this task's folder
 cd cognifyz-internship/task1_text_based_game
 
-# 3. Koi bhi game chalao
+# 3. Run either game
 python guessing_game.py
 python quiz_game.py
 ```
@@ -49,14 +49,13 @@ python quiz_game.py
   <img src="assets/guessing_demo.gif" alt="Guessing game demo" width="700">
 </div>
 
-**Kaise khelna hai** — computer 1 se 100 ke beech ek number sochta hai. Aap guess karo, wo batayega
-zyada hai ya kam. Jeetne pe koshishon ki ginti dikhegi.
+**How it works** — the computer picks a secret number between 1 and 100. You guess, and the game tells you whether your guess is higher or lower. When you win, it reports the number of attempts taken.
 
-**Kya khaas hai**
+**What makes it robust**
 
-- ✅ `hello`, `3.5`, khali Enter — kuch bhi daalo, game **crash nahi hota**
-- ✅ `150` ya `-5` daalo to "range se bahar" — aur wo koshish **count nahi hoti**
-- ✅ Upar wale demo mein 9 input diye gaye, par score **7 koshish** hi bata raha hai
+- ✅ `hello`, `3.5`, an empty Enter — any input is handled and the game **never crashes**
+- ✅ Entering `150` or `-5` prints an "out of range" message, and the attempt is **not counted**
+- ✅ In the demo above, nine inputs were entered but the final score correctly reports **seven attempts**
 
 ```bash
 python guessing_game.py
@@ -70,17 +69,16 @@ python guessing_game.py
   <img src="assets/quiz_demo.gif" alt="Quiz game demo" width="700">
 </div>
 
-**Kaise khelna hai** — topic chuno, difficulty chuno, phir 5 random sawaal aayenge.
-Har sahi jawab ka 1 point. Aakhir mein score, percentage aur high score.
+**How it works** — pick a topic, pick a difficulty, and answer five randomly selected questions. Each correct answer scores one point. At the end you see the score, percentage, and the high score for that combination.
 
-**Kya khaas hai**
+**What makes it robust**
 
-- 🎲 **Har game alag** — 30 sawaal ke bank mein se 5 random, bina repeat ke
+- 🎲 **Every game is different** — five questions are drawn from a bank of thirty, without repeats
 - 🏷️ **Topic filter** — Python / General Knowledge / All
 - 📊 **Difficulty filter** — easy / medium / hard / All
-- 🏆 **High score** — har topic+difficulty ka best score save rehta hai
-- 📝 **Sawaal alag file mein** — code chhue bina naya quiz bana sakte ho
-- ✅ Galat input (`Z`, `hello`, khali) pe sawaal **skip nahi hota**
+- 🏆 **High score** — the best score for each topic + difficulty combination is persisted
+- 📝 **Questions live in a separate file** — new quizzes can be authored without touching Python
+- ✅ Invalid input (`Z`, `hello`, empty) does **not** skip the question — the prompt is repeated
 
 ```bash
 python quiz_game.py
@@ -88,21 +86,20 @@ python quiz_game.py
 
 ---
 
-## 📝 Apne Sawaal Daalo
+## 📝 Adding Your Own Questions
 
-Sawaal `questions.json` mein hain — **code ke andar nahi**. Naya quiz banane ke liye
-bas is file mein sawaal add/badal do. Python file ko haath lagane ki zaroorat nahi.
+Questions live in `questions.json` — **not inside the Python source**. To create a new quiz, edit this file: adding or replacing questions requires no code changes.
 
 ```json
 {
-  "name": "Mera naya question bank",
+  "name": "My question bank",
   "version": 1,
   "questions": [
     {
       "id": "net-e-01",
       "topic": "Networking",
       "difficulty": "easy",
-      "question": "HTTP ka default port kaunsa hai?",
+      "question": "Which port does HTTP use by default?",
       "options": { "A": "21", "B": "80", "C": "443", "D": "22" },
       "answer": "B"
     }
@@ -110,24 +107,23 @@ bas is file mein sawaal add/badal do. Python file ko haath lagane ki zaroorat na
 }
 ```
 
-**Har sawaal mein ye 6 cheezein honi chahiye:**
+**Each question requires these six fields:**
 
-| Field | Matlab |
-|-------|--------|
-| `id` | Unique naam, jaise `net-e-01` |
-| `topic` | Koi bhi topic — menu mein **apne aap** aa jayega |
-| `difficulty` | `easy` / `medium` / `hard` (ya jo aap chaho) |
-| `question` | Sawaal ka text |
-| `options` | Exactly chaar — `A`, `B`, `C`, `D` |
-| `answer` | Sahi option ka letter |
+| Field | Meaning |
+|-------|---------|
+| `id` | Unique identifier such as `net-e-01` |
+| `topic` | Any topic — it appears in the menu automatically |
+| `difficulty` | `easy` / `medium` / `hard` (or any label you choose) |
+| `question` | The question text |
+| `options` | Exactly four — `A`, `B`, `C`, `D` |
+| `answer` | The letter of the correct option |
 
-> 💡 Naya topic daaloge to menu mein wo **khud dikhne lagega** — code badalne ki zaroorat nahi.
-> Menu bank se banta hai, hardcoded nahi hai.
+> 💡 Add a new topic and it will **appear in the menu on its own** — no code change required.
+> The menu is derived from the question bank; nothing is hard-coded.
 >
-> ⚠️ Koi sawaal galat format mein hua to game crash nahi hoga — wo sawaal skip ho jayega
-> aur baaki game normally chalega.
+> ⚠️ If a question is malformed, the game does not crash — that specific question is skipped and the rest of the game runs normally.
 
-**Bundled bank:** 30 sawaal — 2 topics × 3 difficulties × 5 sawaal.
+**Bundled bank:** 30 questions — 2 topics × 3 difficulty levels × 5 questions each.
 
 ---
 
@@ -137,10 +133,10 @@ bas is file mein sawaal add/badal do. Python file ko haath lagane ki zaroorat na
 task1_text_based_game/
 ├── guessing_game.py     # Game 1
 ├── quiz_game.py         # Game 2
-├── questions.json       # Quiz ka question bank (data)
-├── highscores.json      # Khelne par khud banti hai (git mein nahi jaati)
-├── assets/              # README ke demo GIFs
-└── practice/            # Seekhte waqt likhi chhoti scripts
+├── questions.json       # Quiz question bank (data)
+├── highscores.json      # Created at runtime (git-ignored)
+├── assets/              # README demo GIFs
+└── practice/            # Small scripts written while learning
     ├── demo1_def_vs_call.py
     └── demo2_secret_dikhao.py
 ```
@@ -173,8 +169,8 @@ Both games satisfy the requirement independently.
 | Input | Expected behaviour | Reason |
 |-------|--------------------|--------|
 | `50` | "too low" or "too high" | Normal path |
-| `hello` | Error message, asks again | `ValueError` caught |
-| `3.5` | Error message, asks again | `int()` rejects decimal strings |
+| `hello` | Error message, re-prompt | `ValueError` caught |
+| `3.5` | Error message, re-prompt | `int()` rejects decimal strings |
 | `150` | "out of range", attempt NOT counted | Range check runs before the counter |
 | `-5` | "out of range" | `guess < 1` is true |
 | *(empty Enter)* | Error message | Empty string is not an integer |
@@ -185,16 +181,16 @@ Both games satisfy the requirement independently.
 |-------------------|--------------------|--------|
 | `B` | Accepted, scored | Normal path |
 | `b` / `  b  ` | Accepted, scored | `.upper()` and `.strip()` normalise the input |
-| `Z`, `hello`, *(empty)* | Error message, asks again | Not in `("A","B","C","D")` |
-| Menu input `0`, `99`, `abc` | Error message, asks again | Range check plus `int()` conversion |
+| `Z`, `hello`, *(empty)* | Error message, re-prompt | Not in `("A","B","C","D")` |
+| Menu input `0`, `99`, `abc` | Error message, re-prompt | Range check plus `int()` conversion |
 | Two runs, same filter | Different question order/set | `random.sample()` per game |
 | `questions.json` missing | Clear message, no traceback | `FileNotFoundError` handled |
 | `questions.json` malformed | Message with the parse error | `json.JSONDecodeError` handled |
-| A question missing `answer` | That question skipped, game continues | Validated on load |
-| Filter matches fewer than 5 | Plays with what exists, states the count | Guard before `random.sample()` |
+| A question missing `answer` | That question is skipped, game continues | Validated on load |
+| Filter matches fewer than 5 | Plays with what exists, reports the count | Guard before `random.sample()` |
 
 Verified: across 200 simulated selections no game contained a duplicate question.
-All 14 Python questions in the bank were checked by executing the expressions they ask about.
+All 14 Python questions in the bank were validated by executing the expressions they refer to.
 
 </details>
 
@@ -208,16 +204,11 @@ The first version compared the raw string against the secret integer, which rais
 TypeError: '<' not supported between instances of 'str' and 'int'
 ```
 
-Fixed by converting with `int()`, and wrapping that conversion in `try/except ValueError`
-so non-numeric input is handled instead of crashing.
+Fixed by converting with `int()`, and wrapping that conversion in `try/except ValueError` so non-numeric input is handled instead of crashing.
 
-**Bug 2 — attempt counter in the wrong place.** The counter was originally incremented
-*before* the range check, so out-of-range input inflated the attempt count without being a
-real guess. Moving `attempts += 1` to after the `continue` fixed it. Verified: a run with
-6 inputs, 3 of them invalid, reported 3 attempts.
+**Bug 2 — attempt counter in the wrong place.** The counter was originally incremented *before* the range check, so out-of-range input inflated the attempt count without being a real guess. Moving `attempts += 1` to after the `continue` fixed it. Verified: a run with six inputs, three of them invalid, reported three attempts.
 
-This second bug did not crash anything — it just produced a wrong number.
-Those are the harder ones to notice.
+The second bug did not crash anything — it just produced a wrong number. Those are the harder ones to notice.
 
 </details>
 
@@ -233,28 +224,19 @@ This is the main reason both games exist in this task.
 | Loop | `while True` | `for item in selected` |
 | Reason | The number of rounds is unknown until the player wins | The number of questions is fixed at 5 |
 
-Rule of thumb: when the number of repetitions is known in advance, use `for`;
-when it depends on a condition, use `while`.
+Rule of thumb: when the number of repetitions is known in advance, use `for`; when it depends on a condition, use `while`.
 
 ### Questions are data, not code
 
-Keeping the questions in a JSON file rather than a Python list means the program never has
-to change when the content changes. `total = len(selected)` adjusts automatically, and the
-menus are derived from the file rather than hard-coded, so the data file remains the single
-source of truth.
+Storing the questions in a JSON file rather than a Python list means the program never has to change when the content changes. `total = len(selected)` adjusts automatically, and the menus are derived from the file rather than hard-coded, so the data file remains the single source of truth.
 
 ### `random.sample()` rather than `random.choice()`
 
-`random.choice()` picks from the whole pool every time, so calling it five times can return
-the same question twice. `random.sample()` draws without replacement, which is what a quiz
-needs. Because `random.sample()` raises `ValueError` when asked for more items than the pool
-holds, the pool size is checked first and a shuffled copy is used when the filter matches
-fewer than five questions.
+`random.choice()` picks from the whole pool each time, so calling it five times can return the same question twice. `random.sample()` draws without replacement, which is what a quiz needs. Because `random.sample()` raises `ValueError` when asked for more items than the pool holds, the pool size is checked first and a shuffled copy is used when the filter matches fewer than five questions.
 
 ### Input validation — two different tools, on purpose
 
-The answer prompt only needs a membership test, because the set of valid answers is known
-up front:
+The answer prompt only needs a membership test, because the set of valid answers is known up front:
 
 ```python
 choice = raw.strip().upper()
@@ -262,8 +244,7 @@ if choice in VALID_CHOICES:
     return choice
 ```
 
-The menu prompt also has to convert text to a number, and that conversion can fail, so it
-needs both:
+The menu prompt also has to convert text to a number, and that conversion can fail, so it needs both:
 
 ```python
 try:
@@ -274,8 +255,7 @@ if 1 <= picked <= len(choices):   # our rule: is it a valid menu position?
     ...
 ```
 
-Use `if` when the rule can be checked in advance; use `try/except` when the only way to know
-is to attempt the operation.
+Use `if` when the rule can be checked in advance; use `try/except` when the only way to know is to attempt the operation.
 
 ### File paths
 
@@ -286,8 +266,7 @@ HERE = Path(__file__).parent
 QUESTIONS_FILE = HERE / "questions.json"
 ```
 
-This means the game can be launched from any working directory, not just from inside
-`task1_text_based_game/`.
+This means the game can be launched from any working directory, not just from inside `task1_text_based_game/`.
 
 </details>
 

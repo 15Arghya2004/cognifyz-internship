@@ -9,8 +9,8 @@
 ![React](https://img.shields.io/badge/React%20%2B%20Vite-Dashboard-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Checks](https://img.shields.io/badge/Tests-38%2F38%20pass-brightgreen?style=for-the-badge)
 
-Ek asli web scraper — **terminal se bhi chalta hai, browser dashboard se bhi.**
-Scraping `requests` + `BeautifulSoup` se hoti hai. Koi API shortcut nahi.
+A real web scraper — **runnable from the terminal and from a browser dashboard.**
+Scraping is done with `requests` + `BeautifulSoup`. No API shortcuts.
 
 </div>
 
@@ -31,7 +31,7 @@ cd task6_web_scraper/frontend
 npm install
 ```
 
-**3. Chalao — ek command:**
+**3. Run — one command:**
 
 ```powershell
 .\task6_web_scraper\run.ps1        # Windows
@@ -41,9 +41,9 @@ npm install
 ./task6_web_scraper/run.sh         # Linux / macOS
 ```
 
-Backend `http://localhost:8000` par, dashboard `http://localhost:5173` par khulega.
+The backend runs on `http://localhost:8000` and the dashboard on `http://localhost:5173`.
 
-**Sirf terminal chahiye? Dashboard ki zaroorat hi nahi:**
+**Terminal only? The dashboard is not required:**
 
 ```bash
 python task6_web_scraper/book_scraper.py
@@ -57,25 +57,25 @@ python task6_web_scraper/book_scraper.py
 
 ![Dashboard with Books results](assets/dashboard-books.jpg)
 
-*Books to Scrape se 20 records — live GBP→INR conversion ke saath*
+*20 records collected from Books to Scrape — with live GBP → INR conversion*
 
 </div>
 
-Workflow seedha hai, aur user ko `requests`, `BeautifulSoup`, ya FastAPI kuch samajhne ki zaroorat nahi:
+The workflow is linear, and the user is not required to understand `requests`, `BeautifulSoup` or FastAPI:
 
 ```
-Source chuno  →  Health verify  →  Scrape  →  Results  →  Filter  →  Export
+Pick source  →  Verify health  →  Scrape  →  Results  →  Filter  →  Export
 ```
 
-| Panel | Kya karta hai |
+| Panel | Purpose |
 |---|---|
-| **Source rail** | Books ya Quotes chuno — switch karte hi purana data clear ho jaata hai |
-| **Health checklist** | HTTPS, domain, HTTP status, HTML structure, records extracted, required fields — har step alag se pass/fail |
-| **Scrape control** | `CURRENT` (ek page) · `PAGES` (jitne chaho) · `ALL` (safety limit tak) |
-| **Result register** | Source-aware table — Books ke liye price/rating/stock, Quotes ke liye author/tags |
-| **Filters** | Title/quote search, max price, min rating, category, in-stock only, author, tag |
-| **Exports** | CSV · JSON · PDF — hamesha **current filtered set** par |
-| **Structure probe** | Kisi bhi safe HTTPS page ke headings, links, forms, tables gin kar batata hai |
+| **Source rail** | Choose Books or Quotes — switching clears the previous dataset |
+| **Health checklist** | HTTPS, domain, HTTP status, HTML structure, records extracted, required fields — each step reported separately |
+| **Scrape control** | `CURRENT` (one page) · `PAGES` (a chosen count) · `ALL` (bounded by a safety limit) |
+| **Result register** | Source-aware table — Books shows price / rating / stock; Quotes shows author / tags |
+| **Filters** | Title / quote search, max price, min rating, category, in-stock only, author, tag |
+| **Exports** | CSV · JSON · PDF — always on the **currently filtered set** |
+| **Structure probe** | For any safe HTTPS page, reports headings, links, forms and tables |
 
 ---
 
@@ -86,57 +86,57 @@ Source chuno  →  Health verify  →  Scrape  →  Results  →  Filter  →  E
 | Books to Scrape | `https://books.toscrape.com/` | title, price, rating, availability, URL, category | 50 |
 | Quotes to Scrape | `https://quotes.toscrape.com/` | quote, author, tags, author URL | 10 |
 
-Dono sites **scraping practice ke liye hi banayi gayi hain** — inka `robots.txt` kisi page ko block nahi karta.
+Both sites are **built specifically for scraping practice** — neither `robots.txt` blocks any page.
 
-> **Ek imaandar baat:** Books to Scrape ek **global practice catalogue** hai, Indian book catalogue nahi. Koi verified Indian source nahi mil paaya, isliye koi Indian book ya INR price **banaya nahi gaya**. Jo hai wahi likha hai.
+> **An honest disclaimer:** Books to Scrape is a global practice catalogue, not an Indian book catalogue. No verified Indian source was available, so no Indian book or INR price is **fabricated**. What is here is what is real.
 
-A source ko **verified** tabhi kehte hain jab **isi run mein** uske saare health steps pass ho jayein. Sirf select karne se verified nahi hota, aur har scrape se pehle verification dobara chalti hai.
+A source is considered **verified** only when every health step passes **in the current run**. Selecting a source does not mark it verified, and verification is re-run before every scrape.
 
 ---
 
 ## 🔒 Safety
 
-Scraper sirf wahi karta hai jo karna chahiye:
+The scraper deliberately restricts what it will do:
 
-| Control | Kya rokta hai |
+| Control | What it prevents |
 |---|---|
 | HTTPS-only | plain HTTP requests |
-| Domain allowlist | registered source ke bahar ka koi bhi host |
-| localhost / loopback reject | `localhost`, `127.0.0.1`, `::1` |
-| Private / link-local / reserved IP reject | internal network scanning |
-| DNS resolution check | aisa hostname jo andar ki IP par resolve hota ho |
-| **Redirect validation** | redirect ke baad ki **final URL** bhi wahi rules se guzarti hai |
-| Timeout · retries · backoff | 20s timeout, 2 retries, badhta hua gap |
-| Request delay | har request ke beech 1 second — server par bojh nahi |
-| Safe download path | export folder ke bahar koi file serve nahi hoti |
+| Domain allowlist | any host outside the registered sources |
+| Reject localhost / loopback | `localhost`, `127.0.0.1`, `::1` |
+| Reject private / link-local / reserved IPs | internal network reconnaissance |
+| DNS resolution check | hostnames that resolve to internal addresses |
+| **Redirect validation** | the **final URL** after redirects must also pass every rule |
+| Timeout · retries · backoff | 20s timeout, 2 retries, increasing gap |
+| Request delay | 1-second gap between requests — no load on the target server |
+| Safe download path | export files served only from the exports directory |
 
-Errors user ko **padhne laayak message** ke roop mein milte hain — raw Python traceback kabhi nahi.
+Errors are surfaced to the user as **readable messages** — never as a raw Python traceback.
 
 ---
 
 ## 💱 Currency
 
-Books ke prices **GBP mein hi rehte hain** (source wahi deta hai), aur uske saath live INR value bhi dikhti hai. Rate [Frankfurter](https://www.frankfurter.app/) se aata hai, hardcode **bilkul nahi**.
+Book prices are **kept in GBP** (the source publishes them in GBP), and each row displays a live INR value alongside. The rate comes from [Frankfurter](https://www.frankfurter.app/); nothing is hard-coded.
 
-- Rate ek baar fetch hokar cache ho jaata hai
-- Fail ho jaye to dobara koshish hoti hai (5 minute cooldown ke saath)
-- Kabhi na mile to dashboard saaf kehta hai **"INR conversion unavailable"** — jhootha number nahi dikhata
+- The rate is fetched once and cached.
+- On failure, retry is attempted with a 5-minute cooldown.
+- If no rate can ever be obtained, the dashboard displays **"INR conversion unavailable"** — no fabricated number.
 
-*Live run mein observe kiya gaya:* `£51.77 → ₹6720.26`, yaani `1 GBP ≈ ₹129.81`.
+*Observed during a live run:* `£51.77 → ₹6720.26`, i.e. `1 GBP ≈ ₹129.81`.
 
 ---
 
 ## 📤 Exports
 
-Files yahan banti hain: `task6_web_scraper/exports/`
+Output files are written to `task6_web_scraper/exports/`.
 
-| Format | Kya milta hai |
+| Format | Content |
 |---|---|
 | **CSV** | flat, machine-readable — `title, price_inr, price, original_currency, rating, availability, category, url` |
 | **JSON** | structured report — `{ report, statistics, results }` |
 | **PDF** | professional report — summary metrics, results table, repeating headers, timestamps, page numbers |
 
-Teenon **current filtered results** par chalte hain, poore dataset par nahi.
+All three operate on the **current filtered result set**, not on the raw dataset.
 
 ---
 
@@ -153,21 +153,21 @@ Ran 38 tests
 OK
 ```
 
-Saare tests **offline** chalte hain — HTML fixtures aur mocks se, internet ki zaroorat nahi.
+Every test runs **offline** — HTML fixtures and mocks, no internet required.
 
 <details>
-<summary><b>38 tests kya cover karte hain</b></summary>
+<summary><b>Coverage across the 38 tests</b></summary>
 
 | Group | Coverage |
 |---|---|
-| Parsing | Books aur Quotes fields, relative → absolute URLs, pagination, khaali HTML |
-| Validation | required fields, invalid records, khaali source health fail |
+| Parsing | Books and Quotes fields, relative → absolute URLs, pagination, empty HTML |
+| Validation | required fields, invalid records, empty source health failure |
 | URL safety | HTTPS-only, domain allowlist, localhost, loopback, private IP |
-| Fetch | HTML result + request counting, **redirect to another domain reject**, same-domain redirect allow |
-| Input | non-finite values (`nan`, `inf`, `-inf`) reject |
-| Export | CSV/JSON content, directory auto-create |
-| Source state | switch karne par results/stats clear, failed health par verification clear |
-| **API contract** | currency enrichment, JSON/PDF export shape, source switch isolation |
+| Fetch | HTML result + request counting, **redirect to a different domain rejected**, same-domain redirect allowed |
+| Input | non-finite values (`nan`, `inf`, `-inf`) rejected |
+| Export | CSV / JSON content, directory auto-creation |
+| Source state | switching a source clears results and stats; a failed health resets verification |
+| **API contract** | currency enrichment, JSON / PDF export shape, source-switch isolation |
 | **Regressions** | results-before-scrape, zero-match filter, clear-filters recovery, export messages, FX retry |
 
 </details>
@@ -176,84 +176,84 @@ Saare tests **offline** chalte hain — HTML fixtures aur mocks se, internet ki 
 
 ## 🔌 API Contract
 
-Dashboard scraping khud nahi karta — sab kuch isi API se hota hai, aur API wahi `book_scraper.py` engine wrap karta hai.
+The dashboard does not scrape on its own — every operation goes through this API, and the API wraps the same `book_scraper.py` engine.
 
-| Method | Endpoint | Kaam |
+| Method | Endpoint | Purpose |
 |---|---|---|
-| `GET` | `/api/health` | service alive check |
-| `GET` | `/api/sources` | source list + current source |
-| `POST` | `/api/sources/{id}/verify` | health check chalao, step-by-step result |
-| `POST` | `/api/scrape` | `current` / `custom` / `all` mode mein scrape |
-| `POST` | `/api/filter` | scraped dataset par in-memory filter |
+| `GET` | `/api/health` | service liveness |
+| `GET` | `/api/sources` | source list + currently selected source |
+| `POST` | `/api/sources/{id}/verify` | run health checks and return step-by-step results |
+| `POST` | `/api/scrape` | scrape in `current` / `custom` / `all` mode |
+| `POST` | `/api/filter` | in-memory filter against the scraped dataset |
 | `GET` | `/api/results` | current result set |
-| `POST` | `/api/probe` | kisi safe HTTPS page ka structure |
-| `POST` | `/api/export` | CSV / JSON / PDF banao |
-| `GET` | `/api/download/{filename}` | export file securely serve karo |
+| `POST` | `/api/probe` | structural summary of any safe HTTPS page |
+| `POST` | `/api/export` | produce CSV / JSON / PDF |
+| `GET` | `/api/download/{filename}` | serve an export file securely |
 
-Har endpoint **hamesha valid JSON** deta hai — success par bhi, error par bhi. Errors readable message ke saath aate hain.
+Every endpoint **always returns valid JSON** — on both success and error paths. Errors are accompanied by a readable message.
 
 ---
 
 <details>
-<summary><b>🐛 Jo asli bugs pakde aur theek kiye (click karo)</b></summary>
+<summary><b>🐛 Real bugs found and fixed (click to expand)</b></summary>
 
-Ye project ka sabse seekhne wala hissa raha. Har bug asli tha, reproduce hua, aur uske liye test likha gaya.
+This section captures the highest-value learning from the project. Each bug was real, reproducible, and covered by a regression test.
 
-### 1. Redirect ke baad ka URL check nahi ho raha tha — *security*
+### 1. Redirect target was not being re-validated — *security*
 
-Purana code request bhejne se **pehle** URL validate karta tha, par redirect ke baad ki **final URL** check nahi karta tha. Matlab: allowed source → redirect → bahar ka domain, aur uska data chupchaap parse ho jaata.
+The original code validated the URL **before** the request, but did not check the **final URL** after redirects. That allowed the sequence: allowed source → redirect → external domain, with the redirected response being parsed silently.
 
-**Fix:** `response.url` ab usi safety system se guzarti hai. Same-domain redirect allowed, bahar wala reject.
+**Fix:** `response.url` is now put through the same safety system. Same-domain redirects are allowed; cross-domain redirects are rejected.
 
 ### 2. `"Unexpected end of JSON input"` — *frontend contract*
 
-Dashboard startup par yahi error dikhta tha. Frontend ka shared helper ye karta tha:
+The dashboard displayed this error on startup. The shared frontend helper looked like:
 
 ```ts
-const data = await response.json();          // pehle parse
-if (!response.ok) throw new Error(...);      // phir status check
+const data = await response.json();          // parse first
+if (!response.ok) throw new Error(...);      // then check status
 ```
 
-Backend band ho to **Vite proxy `HTTP 502` aur 0-byte body** deta hai (ye measure karke confirm kiya). Khaali body par `.json()` `SyntaxError` phenkta hai, aur asli 502 kahin kho jaata hai.
+When the backend is down, the **Vite proxy returns `HTTP 502` with a 0-byte body** (measured and confirmed). Calling `.json()` on an empty body throws `SyntaxError`, and the real 502 is lost.
 
-**Fix:** pehle body ko text ki tarah padho, JSON parse sirf tab karo jab body khaali na ho, aur non-OK par backend ka apna message dikhao. Ab backend band ho to seedha likha aata hai:
+**Fix:** read the body as text first, parse JSON only when the body is non-empty, and surface the backend's own message on non-OK responses. The user now sees:
 
 > *"Backend unavailable. Make sure the scraper API is running on port 8000."*
 
-### 3. Filter se zero result = user phans jaata tha
+### 3. Filter to zero results left the user stuck
 
-Filter agar kuch match na kare to backend `LAST_RESULTS` ko khaali kar deta tha, aur guard `if not LAST_RESULTS` par tha. Iska matlab **"Clear filters" bhi 409 de deta tha** — *"Scrape results before filtering."* User ko dobara scrape karna padta.
+If a filter matched nothing, the backend cleared `LAST_RESULTS`, and the guard `if not LAST_RESULTS` fired. The result was that **"Clear filters" itself returned 409** — *"Scrape results before filtering."* The user was forced to re-scrape.
 
-**Fix — invariant saaf kiya:**
+**Fix — the invariant was made explicit:**
 
 ```
-_base_results  =  jo scrape hua (nahi badalta)
-LAST_RESULTS   =  jo abhi dikh raha hai (filter se badalta hai)
+_base_results  =  what was scraped (never mutated)
+LAST_RESULTS   =  what is currently displayed (mutated by filter)
 ```
 
-"Scrape hua kya" ab `_base_results` se poocha jaata hai. Export ke do alag message bhi hain — *"scrape pehle karo"* aur *"filter kuch match nahi kar raha"*.
+"Has anything been scraped?" is now asked against `_base_results`. Export raises two distinct messages — *"scrape a source first"* and *"the filter matches nothing"*.
 
-Live testing mein iska **doosra aadha hissa** bhi mila: frontend ke saare filter controls `disabled={!records.length}` par the, to zero-match ke baad search box, Filter, Apply aur Clear — chaaron **dead** ho jaate the. Wahi invariant frontend mein bhi lagaya (`disabled={!stats}`).
+Live testing revealed **the other half of the same bug**: every frontend filter control was gated on `disabled={!records.length}`, so once a filter matched zero rows, the search box, Filter, Apply and Clear controls all went dead. The invariant was applied on the frontend too (`disabled={!stats}`).
 
 <div align="center">
 
 ![Zero match filter state](assets/zero-match-filter.jpg)
 
-*Ab zero-match apna alag state dikhata hai — "20 records collected · 0 matching the current filter" — aur Clear filters kaam karta hai*
+*Zero-match now has its own explicit state — "20 records collected · 0 matching the current filter" — and Clear filters remains functional*
 
 </div>
 
-### 4. Exchange rate ek baar fail hua to hamesha ke liye band
+### 4. Exchange rate could go permanently disabled after one failure
 
-`attempted` flag request se **pehle** set hota tha aur failure par kabhi clear nahi hota tha. Ek network blip = poore process ke liye INR band.
+The `attempted` flag was set **before** the request and never cleared on failure. A single network blip disabled INR conversion for the rest of the process.
 
-**Fix:** cache successful rate ko rakhta hai, failure 5 minute baad dobara try hoti hai.
+**Fix:** the cache holds successful rates only; on failure, a fresh attempt is made after a 5-minute cooldown.
 
-### 5. Purana backend chupchaap frontend ko serve kar raha tha
+### 5. An old backend silently served the frontend
 
-Agar port 8000 pehle se busy ho, to naya uvicorn bind fail karta tha (error sirf uski window mein), aur Vite **purane** backend se baat karta rehta tha — purane API contract ke saath.
+If port 8000 was already occupied, the new uvicorn bind failed (with the error in its own window), and Vite continued talking to the **stale** backend using the older API contract.
 
-**Fix:** `run.ps1` aur `run.sh` ab **8000 aur 5173 dono check karte hain**, PID batate hain, aur start hone se mana kar dete hain:
+**Fix:** `run.ps1` and `run.sh` now check **both 8000 and 5173**, report the PID, and refuse to start:
 
 ```
 Port 8000 is already in use, so the backend (uvicorn) cannot start cleanly.
@@ -263,23 +263,23 @@ Port 8000 is already in use, so the backend (uvicorn) cannot start cleanly.
 Startup cancelled so the dashboard does not attach to an old backend.
 ```
 
-### 6. Text export mein khaali description `None` ban jaata tha
+### 6. Empty description became `None` in text export
 
-`value if value != "" else None` har khaali field ko `None` bana deta tha. Par khaali **description** ka matlab `None` nahi, `""` hai. Saath mein `data.get("description", "")` bhi galat tha — `get` default sirf tab deta hai jab **key hi na ho**, value `None` hone par nahi.
+`value if value != "" else None` converted every empty field to `None`. But an empty **description** does not mean `None`; it means `""`. And `data.get("description", "")` compounded the problem — `get` only returns the default when the **key is missing**, not when the value is `None`.
 
-**Sabak:** `None` aur `""` ek cheez nahi hain.
+**Lesson:** `None` and `""` are not interchangeable.
 
 </details>
 
 <details>
 <summary><b>⚙️ Design decisions</b></summary>
 
-- **Ek hi readable file mein scraper engine** — koi manager class, adapter framework, ya factory pattern nahi. Flow upar se neeche padha ja sakta hai: constants → model → fetching → parsing → display → actions → menu.
-- **API scraper ko wrap karta hai, dohrata nahi.** React mein ek line bhi scraping logic nahi hai.
-- **CLI zinda hai.** Dashboard usko replace nahi karta — dono ek hi engine par chalte hain.
-- **Har scrape se pehle verification.** Site badal jaye to scrape shuru hi nahi hota.
-- **Filter server-side, scraped data par** — dobara request nahi jaati, site par bojh nahi padta.
-- **Statistics asli hain** — pages, HTTP requests, valid/invalid records, elapsed time. Koi banaya hua metric nahi.
+- **One readable file for the scraper engine** — no manager class, adapter framework or factory pattern. The flow reads top-to-bottom: constants → model → fetching → parsing → display → actions → menu.
+- **The API wraps the scraper; it does not re-implement it.** No scraping logic exists in React.
+- **The CLI is not deprecated.** The dashboard does not replace it — both run on the same engine.
+- **Verification runs before every scrape.** If the site's structure changes, scraping does not start.
+- **Filtering is server-side, on the scraped dataset** — no new request is issued and the target server is not re-hit.
+- **Statistics are real** — pages, HTTP requests, valid / invalid records, elapsed time. No fabricated metric.
 
 </details>
 
@@ -295,7 +295,7 @@ task6_web_scraper/
 ├── api.py                     <- FastAPI wrapper around the engine
 ├── run.ps1 / run.sh           <- one-command startup, with port guards
 ├── assets/                    <- dashboard screenshots
-├── exports/                   <- generated CSV/JSON/PDF (gitignored)
+├── exports/                   <- generated CSV/JSON/PDF (git-ignored)
 ├── tests/
 │   ├── test_scraper.py
 │   └── test_api.py
@@ -311,10 +311,10 @@ task6_web_scraper/
 
 ## ⚠️ Limitations
 
-- Sirf do registered sources poori tarah supported hain. Custom URL **safe structure probe** ke liye hai, automatic scraping ke liye nahi.
-- Koi database, cache, ya concurrency nahi — jaan-boojh kar, kyunki ye ek internship task hai.
-- Dono practice sites ka HTML badal jaye to parser update karna padega. Health check us case ko pakad lega.
-- Server-side state single-process hai — ek hi result set sabhi browser tabs ke liye.
+- Only the two registered sources are fully supported. Custom URLs are limited to **safe structure probing**; automatic scraping of arbitrary sites is not offered.
+- No database, no cache, no concurrency — a deliberate scope decision for an internship task.
+- If either practice site's HTML changes, the parser will need to be updated. The health check will surface that case.
+- Server-side state is single-process — one result set is shared across all browser tabs.
 
 <div align="center">
 
